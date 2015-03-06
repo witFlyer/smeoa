@@ -1,0 +1,94 @@
+<script type="text/javascript">
+	$(document).ready(function() {
+		$("#confirm span").on("dblclick", function() {
+			$("#confirm span").last().find("b").remove();
+		});
+		$("#consult span").on("dblclick", function() {
+			$("#consult span").last().find("b").remove();
+		});
+		
+	}); 
+
+	function save(step){
+		window.onbeforeunload=null;
+		$("#confirm").val("");
+		$("#confirm_wrap  span").each(function() {
+			$("#confirm").val($("#confirm").val() + $(this).attr("data") + '|');
+		});
+		$("#confirm_name").val($("#confirm_wrap").html());
+
+		$("#consult").val("");
+		$("#consult_wrap  span").each(function() {
+			$("#consult").val($("#consult").val() + $(this).attr("data") + '|');
+		});
+		$("#consult_name").val($("#consult_wrap").html());
+
+		$("#refer").val("");
+		$("#refer_wrap  span").each(function() {
+			$("#refer").val($("#refer").val() + $(this).attr("data") + '|');
+		});
+		$("#refer_name").val($("#refer_wrap").html());
+
+		if ($("#confirm").val().length < 2) {
+			ui_error('请选择审批流程');
+			return false;
+		}
+		$("#step").val(step);
+		var flow_type=$('input[name="flow_type"]').val();
+		if(flow_type=='外出备案'){
+			var s_time=$('input[name="flow_field_36"]').val();
+			var e_time=$('input[name="flow_field_37"]').val();
+			if(s_time>e_time){
+				ui_error('开始时间不得大于结束时间');
+				return false;
+			}
+			if(check_form("form_data")){
+				sendForm("form_data", "{:U('save')}");
+			}
+		}else{
+			var s_time=$('input[name="flow_field_14"]').val();
+			var e_time=$('input[name="flow_field_13"]').val();
+			var qinjia_count=$('input[name="flow_field_29"]').val();
+
+			var flow_field_12 =$('input[name="flow_field_12"]:checked').val();
+			var time={
+				'flow_field_14':s_time,
+				'flow_field_13':e_time,
+				'flow_field_12':flow_field_12,
+				'flow_field_29':qinjia_count,
+				'type'		   :$('#type').val(),
+				'opmode'	   :$('#opmode').val(),
+			}
+
+			if((qinjia_count%0.5)!=0){
+				ui_error('请假天数必须为0.5的倍数');
+				return false;
+			}
+			if(s_time>e_time){
+				ui_error('开始时间不得大于结束时间');
+				return false;
+			}
+			if(check_form("form_data")){
+				$.post("{:U('profile/checkTime')}",time,function(result){
+					if(result==1){
+						ui_error('您的请假时间冲突');
+						return false;
+					}else if(result==2){
+						ui_error('您的年假不足');
+						return false;
+					}else if(result==3){
+						ui_error('请填写请假类型');
+						return false;
+					}else{
+						sendForm("form_data", "{:U('save')}");
+					}
+				},'json');
+			}
+		}			
+	}
+
+	function popup_confirm() {
+		winopen("{:U('popup/confirm')}", 730, 574);
+	}
+
+</script>

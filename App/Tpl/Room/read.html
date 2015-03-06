@@ -1,0 +1,297 @@
+<layout name='Layout/ace_layout' />
+{:W('PageHeader',array('name'=>array($flow_type['name'],'：',$vo['name']),'search'=>'N'))}
+<style>
+#ul_confirm{
+	height:auto;
+	overflow:hidden;
+}
+#ul_confirm .confirm_con{
+	font-weight:bold;
+	width:150px;
+	height:100px;
+	float:left;
+	text-align:center;
+	border:1px solid #666;
+	margin-right:10px;
+	box-shadow:6px 5px 3px #999;
+}
+#ul_confirm .confirm_con span{
+	width:148px;
+	height:33px;
+	font-size:14px;
+	display:block;
+	text-align:center;
+	line-height:33px;
+}
+#ul_confirm .confirm_con .a{
+	width:148px;
+	height:33px;
+	color:#fff;
+	margin-top:36px;
+	line-height:33px;
+	text-align:center;
+	display:block;
+}
+#ul_confirm .confirm_con .b{
+	color:#999;
+	height:25px;
+	margin-top:-5px;
+	font-weight:400;
+}
+#ul_confirm  i{
+	font-size:20px;
+	float:left;
+	margin-top:34px;
+	color:#333;
+}
+</style>
+
+<div class="operate panel panel-default hidden-print">
+	<div class="panel-body">
+		<div class="pull-left">
+			<a onclick="go_return_url();" class="btn btn-sm btn-primary">返回</a>
+			<a href="#flow_status"  class="btn btn-sm btn-primary">审批情况</a>
+			<notempty name="to_confirm">
+				<a href="#confirm"  class="btn btn-sm btn-primary">办理意见</a>
+			</notempty>
+		</div>
+		<if condition = "$can_del">
+		<div class="pull-right">
+			<a onclick="del();"  class="btn btn-sm btn-danger">删除</a>
+		</div>
+		</if>
+	</div>
+</div>
+<input type="hidden" name="folder" value="{$folder}">
+<input type="hidden" id="user_id" name="user_id" value="{$vo.user_id}">
+<input type="hidden" id="is_write" name="is_write" value="{$is_write}">
+<input type="hidden" id="rid" name="rid" value="{$rid}">
+<form method='post' id="form_data" name="form_data" enctype="multipart/form-data" class="well form-horizontal">
+	<input type="hidden" id="ajax" name="ajax" value="0">
+	<input type="hidden" id="add_file" name="add_file" >
+	<input type="hidden" id="type" name="type" value="{$flow_type.id}">
+	<input type="hidden" id="opmode" name="opmode" value="add">
+	<input type="hidden" id="confirm" name="confirm" value="">
+	<input type="hidden" id="confirm_name" name="confirm_name" value="">
+	<input type="hidden" id="refer" name="refer" value="">
+	<input type="hidden" id="refer_name" name="refer_name" value="">
+	<input type="hidden" id="step" name="step" value="">
+
+	<div class="form-group">
+		<label class="col-sm-2 control-label" for="name" style="width:20.5%">会议主题*：</label>
+		<div class="col-sm-8">
+			<input class="form-control" type="text" id="name" name="name" check="require" msg="请输入标题" value="{$vo.name}">
+		</div>
+	</div>
+	<div class="form-group col-sm-6">
+		<label class="col-sm-5 control-label" for="name">开始时间*：</label>
+		<div class="col-sm-5">
+			<input data-date-format="yyyy-mm-dd" type="text" id="start_date" name="start_date" readonly="readonly" class="form-control input-dateEmail"   check="require" msg="请输入开始时间" value="{$vo.start_date}">
+		</div>
+	</div>
+
+	<div class="form-group col-sm-6">
+		<label class="col-sm-5 control-label" for="name">结束时间*：</label>
+		<div class="col-sm-5">
+			<input data-date-format="yyyy-mm-dd" type="text" id="end_date" name="end_date" readonly="readonly"
+			class="form-control input-dateEmail" check="require" msg="请输入结束时间" value="{$vo.end_date}">
+		</div>
+	</div>
+
+	<div class="form-group col-sm-6">
+		<label class="col-sm-5 control-label" for="room_id">会议室：</label>
+		<div class="col-sm-6">
+		<select name="room_id" id="room_id">
+			<option value="">请选择会议室</option>
+			{:fill_option($room_list,$vo['room_id'])}
+		</select>
+		</div>
+	</div>
+	<div class="form-group col-sm-6">
+		<label class="col-sm-5 control-label" for="room_use">会议用途：</label>
+		<div class="col-sm-6">
+		<select name="room_use" id="room_use">
+			<option value="">请选择会议用途</option>
+			{:fill_option(C('ROOM_USE'),$vo['room_use'])}
+		</select>
+		</div>
+	</div>
+	
+	<div class="form-group col-sm-6">
+		<label class="col-sm-5 control-label" for="actor">申请人：</label>
+		<span class="col-sm-2 control-label" style="text-align:left;">{$vo.user_id|get_uname_byid}</span>
+	</div>
+	<div class="form-group col-sm-6">
+		<label class="col-sm-5 control-label" for="nums">会议人数：</label>
+		<div class="col-sm-5">
+			<input name="nums" type="text" id="nums" value="{$vo.nums}" class="form-control"/>
+		</div>
+	</div>
+	<div class="form-group col-sm-6">
+		<label class="col-sm-5 control-label" for="part">申请处室(部门):</label>
+		<div class="col-sm-5">
+			<input name="part" type="text" id="part" value="{$vo.part}" class="form-control"/>
+		</div>
+	</div>
+	<div class="form-group col-sm-6">
+		<label class="col-sm-5 control-label" for="host">金融局会议主办人员：</label>
+		<div class="col-sm-5">
+			<input name="host" type="text" id="host" value="{$vo.host}" class="form-control"/>
+		</div>
+	</div>
+	<div class="form-group col-sm-6">
+		<label class="col-sm-5 control-label" for="new_leader">新区及以上主要领导出席:</label>
+		<div class="col-sm-5">
+			<input name="new_leader" type="text" id="new_leader" value="{$vo.new_leader}" class="form-control"/>
+		</div>
+	</div>
+	<div class="form-group col-sm-6">
+		<label class="col-sm-5 control-label" for="financial_leader">金融局主要领导出席：</label>
+		<div class="col-sm-5">
+			<input name="financial_leader" type="text" id="financial_leader" value="{$vo.financial_leader}" class="form-control"/>
+		</div>
+	</div>
+	<div class="form-group col-sm-6">
+		<label class="col-sm-5 control-label" for="other_people">金融局其他出席人员：</label>
+		<div class="col-sm-5">
+			<input name="other_people" type="text" id="other_people" value="{$vo.other_people}" class="form-control"/>
+		</div>
+	</div>
+	<div class="form-group col-sm-6">
+		<label class="col-sm-5 control-label" for="other_leader">金融局其他领导出席：</label>
+		<div class="col-sm-5">
+			<input name="other_leader" type="text" id="other_leader" value="{$vo.other_leader}" class="form-control"/>
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-sm-2 control-label" for="device" style="width:20.5%;">申请设备(数量)：</label>
+		<div class="col-sm-8" style="background-color:#ffffff;border:1px solid #ddd;padding:10px;width:64%;margin-left:12px;">
+			<span>便携话筒:</span><input style="width:40px;text-align:center;margin-left:5px;margin-right:10px;border-radius:6px;" type="text" name="device_bian" value="{$vo.device_bian}" />
+			<span>固定话筒:</span><input type="text" name="device_gu" value="{$vo.device_gu}" style="width:40px;text-align:center;margin-left:5px;margin-right:13px;"/>
+			<span>手持话筒:</span><input type="text" name="device_shou" value="{$vo.device_shou}" style="width:40px;text-align:center;margin-left:5px;margin-right:13px;"/>
+			<span>投影仪:</span><input type="text" name="device_tou" value="{$vo.device_tou}" style="width:40px;text-align:center;margin-left:5px;margin-right:13px;"/>
+			<span>同传:</span><input type="text" name="device_tong" value="{$vo.device_tong}" style="width:40px;text-align:center;margin-left:5px;margin-right:13px;"/>
+			<span>音响:</span><input type="text" name="device_yin" value="{$vo.device_yin}" style="width:40px;text-align:center;margin-left:5px;margin-right:10px;"/>
+		</div>
+	</div>
+	<notempty name="vo.add_file">
+	<div class="form-group">
+		<label class="col-sm-2 control-label" style="width:20.5%;">附件：</label>
+		<div class="col-sm-9">
+			{:W('File',array('add_file'=>$vo['add_file'],'mode'=>'show'))}
+		</div>
+	</div>
+	</notempty>
+	<div class="form-group">
+		<div class="col-xs-12">
+			<textarea  class="editor" id="content" name="content" style="width:100%;height:300px;">{$vo.content}</textarea>
+		</div>
+	</div>
+<div class="clearfix"></div>
+<a id="flow_step"></a>
+{:W('PageHeader',array('name'=>'审批流转情况','search'=>'N'))}
+<div class="ul_table border-bottom">
+<ul id="ul_confirm">
+	<?php foreach ($list['confirm_name'] as $k => $v): ?>
+		<if condition="$v['is_agree'] eq 1">
+		<i class="fa fa-mail-forward"></i>
+		<li class="confirm_con">
+			<span style="color:#009900;">{$v.name}</span>
+			<p class="a" style="background:rgba(0,105,0,0.85);">同意</p>
+			<p class="b">{$v.update_time|toDate='Y-m-d H:i'}</p>
+		</li>
+		
+		<elseif condition="$v['is_agree'] eq 2"/>
+		<i class="fa fa-mail-forward"></i>
+		<li class="confirm_con">
+			<span  style="color:#428BCA;">{$v.name}</span>
+			<p class="a" style="background:#428BCA;">审核中</p>
+			<p class="b">{$v.update_time|toDate='Y-m-d H:i'}</p>
+		</li>
+		<elseif condition="$v['is_agree'] eq 0"/>
+		<i class="fa fa-mail-forward"></i>
+		<li class="confirm_con">
+			<span style="color:#FF0033;">{$v.name}</span>
+			<p class="a" style="background:#FF0033;">否决</p>
+			<p class="b">{$v.update_time|toDate='Y-m-d H:i'}</p>
+		</li>
+		<else/>
+		<i class="fa fa-mail-forward"></i>
+		<li class="confirm_con">
+			<span style="color:#777;">{$v.name}</span>
+			<p class="a" style="background:#ccc;"></p>
+		</li>
+		</if>
+	<?php endforeach ?>
+</ul>
+</div>
+
+<a id="flow_status"></a>
+{:W('PageHeader',array('name'=>'审批情况','search'=>'N'))}
+<div class="ul_table border-bottom">
+	<ul>
+		<li class="thead">
+			<span class="col-9 text-center">审批人</span>
+			<span class="col-16 text-center">审批日期</span>
+			<span class="col-9 text-center">审批结果</span>
+			<span class="auto">审批意见</span>
+		</li>
+		<volist name="flow_log" id="item">
+		<li class="tbody">
+			<span style="width:90px;" class="text-center">{$item.user_name}</span>
+			<span style="width:160px;" class="text-center">{$item.create_time|toDate='Y-m-d H:i'}</span>
+			<?php if($item['result']):?>
+				<span style="width:90px;color:#009900;" class="text-center">{$item.result|show_result}</span>
+			<?php else:?>
+				<span style="width:90px;color:#FF0000;" class="text-center">{$item.result|show_result}</span>
+			<?php endif;?>
+			<span class="auto">
+				<div style="overflow:hidden">
+					{$item.comment}
+				</div> </span>
+		</li>
+		</volist>
+	</ul>
+</div>
+</form>
+<notempty name="to_confirm">
+	<a id="confirm"></a>
+	{:W('PageHeader',array('name'=>'办理意见','search'=>'N'))}
+	<form method="post" action="" name="form_confirm" id="form_confirm">
+		<input type="hidden" name="id" value="{$to_confirm.id}">
+		<input type="hidden" name="flow_id" value="{$vo.id}">
+		<input type="hidden" name="step" value="{$to_confirm.step}">
+		<div class="operate panel panel-default">
+			<div class="panel-heading clearfix">
+				<div class="pull-left">
+					<a onclick="go_return_url();" class="btn btn-sm btn-primary">返回</a>
+				</div>
+				<div class="pull-right">
+<!-- 					<div class="btn-group">
+						<a class="btn btn-sm btn-warning dropdown-toggle" data-toggle="dropdown" href="#">退回到&nbsp;<span class="fa fa-caret-down"></span> </a>
+						<ul class="dropdown-menu col-5">
+							<volist name="confirmed" id="vo">
+							<li onclick="back_to('{$vo.emp_no}');">
+								<a>{$vo.user_name}</a>
+							</li>
+							</volist>
+							<li onclick="back_to('{$emp_no}');">
+								<a>{$user_name}</a>
+							</li>
+						</ul>
+					</div> -->
+					<a onclick="reject();" class="btn btn-sm btn-danger">否决</a>
+					|
+					<a onclick="approve();" class="btn btn-sm btn-primary">同意</a>
+				</div>
+			</div>
+			<div class="form-group panel-body">
+				<label class="col-sm-2 control-label" >办理意见：</label>
+				<div class="col-sm-10">
+					<textarea name="comment" class="col-xs-12" style="height:120px"></textarea>
+				</div>
+			</div>
+		</div>
+	</form>
+	
+</notempty>

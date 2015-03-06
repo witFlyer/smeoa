@@ -1,0 +1,56 @@
+<script type="text/javascript">
+	function approve() {
+		sendForm("form_confirm", "{:U('mark','action=approve')}", "{:U('read','id='.$vo['id'])}");
+	}
+
+	function reject() {
+		sendForm("form_confirm", "{:U('mark','action=reject')}", "{:U('read','id='.$vo['id'])}");
+	}
+
+	function back_to(emp_no) {
+		sendForm("form_confirm", fix_url("{:U('mark','action=back')}?emp_no=" + emp_no), "{:U('read','id='.$vo['id'])}");
+	}
+
+	function save() {
+		window.onbeforeunload = null;
+
+		if(check_form("form_data")){
+			sendForm("form_data", "{:U('save')}");
+		}	
+	}
+
+	function del(){
+		var data = {
+			'id' : $('#rid').val()
+		};
+		ui_confirm('确定要删除吗?',function(){
+			$.post("{:U('del')}",data,function (result){
+				if(result){
+					ui_success("删除成功!");
+					go_return_url();
+				}else{
+					ui_error("删除失败!");
+					return false;
+				}
+			},'json');
+		});
+	}
+
+	function select_confirm() {
+		winopen("{:U('popup/confirm')}", 730, 750);
+	};
+
+	$(document).ready(function(){
+		set_return_url(document.location,1);
+		$("input").attr("readonly","readonly");
+		$("select").attr("disabled","none");
+
+		$("#confirm span").on("dblclick", function() {
+			$("#confirm span").last().find("b").remove();
+		});
+		$("#consult span").on("dblclick", function() {
+			$("#consult span").last().find("b").remove();
+		});
+		show_content();		
+	}); 
+</script>

@@ -1,0 +1,400 @@
+<layout name='Layout/ace_layout' />
+{:W('PageHeader',array('name'=>array($flow_type['name'],'：',$vo['name']),'search'=>'N'))}
+<style>
+#ul_confirm{
+	height:auto;
+	overflow:hidden;
+}
+#ul_confirm .confirm_con{
+	font-weight:bold;
+	width:150px;
+	height:100px;
+	float:left;
+	text-align:center;
+	border:1px solid #666;
+	margin-right:10px;
+	box-shadow:6px 5px 3px #999;
+}
+#ul_confirm .confirm_con span{
+	width:148px;
+	height:33px;
+	font-size:14px;
+	display:block;
+	text-align:center;
+	line-height:33px;
+}
+#ul_confirm .confirm_con .a{
+	width:148px;
+	height:33px;
+	color:#fff;
+	margin-top:36px;
+	line-height:33px;
+	text-align:center;
+	display:bolck;
+}
+#ul_confirm .confirm_con .b{
+	color:#999;
+	height:25px;
+	margin-top:-5px;
+	font-weight:400;
+}
+#ul_confirm  i{
+	font-size:20px;
+	float:left;
+	margin-top:34px;
+	color:#333;
+}
+</style>
+
+<div class="operate panel panel-default hidden-print">
+	<div class="panel-body">
+		<div class="pull-left">
+			<a onclick="go_return_url();" class="btn btn-sm btn-primary">返回</a>
+			<a href="#flow_status"  class="btn btn-sm btn-primary">审批情况</a>
+			<notempty name="to_confirm">
+				<a href="#confirm"  class="btn btn-sm btn-primary">办理意见</a>
+			</notempty>
+		</div>
+		 <if condition="($list['step'] eq 40) AND $is_assign">
+		  <div class="pull-left">	
+			<a href="#flow_ensure"  class="btn btn-sm btn-primary">处理情况</a>	
+		  </div>
+		  </if>
+	</div>
+</div>
+<input type="hidden" name="folder" value="{$folder}">
+<input type="hidden" id="user_id" name="user_id" value="{$vo.user_id}">
+<input type="hidden" id="is_write" name="is_write" value="{$is_write}">
+<form method='post' id="form_data" name="form_data" enctype="multipart/form-data"  class="well form-horizontal">
+	<input type="hidden" id="ajax" name="ajax" value="0">
+	<input type="hidden" id="opmode" name="opmode" value="edit">
+	<input type="hidden" id="name" name="name" value="{$vo.name}">
+	<input type="hidden" id="id" name="id" value="{$vo.id}">
+	<input type="hidden" id="add_file" name="add_file">
+	<input type="hidden" id="folder2" name="folder2" value="{$folder}">
+	<input type="hidden" id="is_ensure" name="is_ensure" value="1">
+	<input type="hidden" id="ensure_name" name="ensure_name" value="{$ensure_name}">
+	<div class="form-group col-sm-6">
+		<label class="col-sm-4 control-label" >文件编号：</label>
+		<div class="col-sm-8">
+			<p class="form-control-static">
+				{$vo.doc_no}
+			</p>
+		</div>
+	</div>
+
+	<div class="form-group col-sm-6">
+		<label class="col-sm-4 control-label" >日期：</label>
+		<div class="col-sm-8">
+			<p class="form-control-static">
+				{$vo.create_time|toDate='Y-m-d H:i'}
+			</p>
+		</div>
+	</div>
+
+	<div class="form-group  col-sm-6">
+		<label class="col-sm-4 control-label" >编写人：</label>
+		<div class="col-sm-8">
+			<p class="form-control-static">
+				{$vo.user_name}
+			</p>
+		</div>
+	</div>
+	<div class="form-group  col-sm-6">
+		<label class="col-sm-4 control-label" >部门：</label>
+		<div class="col-sm-8">
+			<p class="form-control-static">
+				{$vo.dept_name}
+			</p>
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-sm-2 control-label" >所属机构：</label>
+		<div class="col-xs-10">
+			<p id="refer_wrap" class="form-control-static address_list">
+				{$vo.org_name}
+			</p>
+		</div>
+	</div>
+	<div class="form-group col-sm-6">
+		<label class="col-sm-4 control-label" for="org_contact">机构联系人：</label>
+		<div class="col-sm-6">
+			<p class="form-control-static">
+				<empty name="vo.port">-<else/>{$vo.org_contact}</empty>
+			</p>
+		</div>
+	</div>
+	<div class="form-group col-sm-6">
+		<label class="col-sm-4 control-label" for="service_type">类别：</label>
+		<div class="col-sm-5">
+			<p id="service_type" class="form-control-static address_list">
+				{$vo.service_type|serviceType_byid}
+			</p>
+		</div>
+	</div>
+	
+	<div class="form-group col-sm-6">
+		<label class="col-sm-4 control-label" for="port">职务：</label>
+		<div class="col-sm-6">
+			<p class="form-control-static">
+				<empty name="vo.port">-<else/>{$vo.port}</empty>
+			</p>
+		</div>
+	</div>
+	<div class="form-group col-sm-6">
+		<label class="col-sm-4 control-label" for="part">申请处室(部门)：</label>
+		<div class="col-sm-5">
+			<p class="form-control-static">
+				<empty name="vo.port">-<else/>{$vo.part}</empty>
+			</p>
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-sm-2 control-label" for="contact_way">联系方式：</label>
+		<div class="col-sm-3">
+			<p class="form-control-static">
+				<empty name="vo.port">-<else/>{$vo.contact_way}</empty>
+			</p>
+		</div>
+	</div>
+
+	<div class="form-group  col-xs-12" style="display:none">
+		<label class="col-sm-2 control-label" >审批：</label>
+		<div class="col-sm-10">
+			<p id="confirm_wrap" class="form-control-static">
+				{$vo.confirm_name}
+			</p>
+		</div>
+	</div>
+
+	<!-- <div class="form-group col-xs-12">
+		<label class="col-sm-2 control-label" >协商：</label>
+		<div class="col-sm-10">
+			<p id="consult_wrap" class="form-control-static address_list">
+				{$vo.consult_name}
+			</p>
+		</div>
+	</div> -->
+	<div class="form-group col-xs-12" style="display:none">
+		<label class="col-sm-2 control-label" >抄送：</label>
+		<div class="col-sm-10">
+			<p id="refer_wrap" class="form-control-static address_list">
+				{$vo.refer_name}
+			</p>
+		</div>
+	</div>
+	
+	<div class="form-group">
+		<label class="col-sm-2 control-label" >需求内容：</label>
+		<div class="col-xs-9">
+			<textarea class="editor" id="content" name="content" style="width:100%;height:250px;">{$vo.content}</textarea>
+		</div>
+	</div>
+
+	<?php if($folder=='receive' && !$vo['is_ensure'] && $is_write): ?>
+	<div class="form-group">
+		<label class="col-sm-2 control-label" >附件：</label>
+		<div class="col-sm-10">
+			{:W('File',array('add_file'=>$vo['add_file'],'mode'=>'edit'))}
+		</div>
+	</div>
+	<?php else:?>
+		<if condition="!empty($vo['add_file'])">
+		<div class="form-group">
+		<label class="col-sm-2 control-label" >附件：</label>
+		<div class="col-sm-10">
+			{:W('File',array('add_file'=>$vo['add_file'],'mode'=>'show'))}
+		</div>
+	</div>
+	</if>
+<?php endif;?>
+
+<div class="clearfix"></div>
+<a id="flow_step"></a>
+{:W('PageHeader',array('name'=>'审批流转情况','search'=>'N'))}
+<div class="ul_table border-bottom">
+<ul id="ul_confirm">
+	<?php foreach ($list['confirm_name'] as $k => $v): ?>
+		<if condition="$v['is_agree'] eq 1">
+		<i class="fa fa-mail-forward"></i>
+		<li class="confirm_con">
+			<span style="color:#009900;">{$v.name}</span>
+			<p class="a" style="background:rgba(0,105,0,0.85);">同意</p>
+			<p class="b">{$v.update_time|toDate='Y-m-d H:i'}</p>
+		</li>
+		
+		<elseif condition="$v['is_agree'] eq 2"/>
+		<i class="fa fa-mail-forward"></i>
+		<li class="confirm_con">
+			<span  style="color:#428BCA;">{$v.name}</span>
+			<p class="a" style="background:#428BCA;">审核中</p>
+			<p class="b">{$v.update_time|toDate='Y-m-d H:i'}</p>
+		</li>
+		<elseif condition="$v['is_agree'] eq 0"/>
+		<i class="fa fa-mail-forward"></i>
+		<li class="confirm_con">
+			<span style="color:#FF0033;">{$v.name}</span>
+			<p class="a" style="background:#FF0033;">否决</p>
+			<p class="b">{$v.update_time|toDate='Y-m-d H:i'}</p>
+		</li>
+		<else/>
+		<i class="fa fa-mail-forward"></i>
+		<li class="confirm_con">
+			<span style="color:#777;">{$v.name}</span>
+			<p class="a" style="background:#ccc;"></p>
+		</li>
+		</if>
+	<?php endforeach ?>
+</ul>
+</div>
+<a id="flow_status"></a>
+{:W('PageHeader',array('name'=>'审批情况','search'=>'N'))}
+<div class="ul_table border-bottom">
+	<ul>
+		<li class="thead">
+			<span class="col-9 text-center">审批人</span>
+			<span class="col-16 text-center">审批日期</span>
+			<span class="col-16 text-center">审批结果</span>
+			<span class="col-16 text-center">审批意见</span>
+		</li>
+		<volist name="flow_log" id="item">
+		<li class="tbody">
+			<span style="width:90px;" class="text-center">{$item.user_name}</span>
+			<span class="col-16 text-center">{$item.update_time|toDate='Y-m-d H:i'}</span>
+			<?php if($item['result']):?>
+				<span style="color:#009900;" class="col-16 text-center">{$item.result|show_result}</span>
+			<?php else:?>
+				<span style="color:#FF0000;" class="col-16 text-center">{$item.result|show_result}</span>
+			<?php endif;?>
+			<span class="col-16 text-center">
+				<div style="overflow:hidden">
+					{$item.comment}
+				</div> </span>
+		</li>
+		</volist>
+	</ul>
+</div>
+
+<if condition = "($list['step'] eq 40) AND $is_assign">
+{:W('PageHeader',array('name'=>'指派处理人','search'=>'N'))}
+<div class="ul_table border-bottom">
+<notempty name="list.deal_userid">
+	<ul>
+		<li class="thead">
+			<span class="col-9 text-center">指派人</span>
+			<span class="col-16 text-center">处理人</span>
+			<span class="col-16 text-center">指派时间</span>
+			<span class="col-16 text-center">备注</span>
+		</li>
+		<li class="tbody">
+			<span class="col-9 text-center">{$vo.appoint_userid|get_uname_byid}/{$vo.appoint_userid|get_deptname_byuserid}</span>
+			<span class="col-16 text-center">{$vo.deal_userid|get_uname_byid}/{$vo.deal_userid|get_deptname_byuserid}</span>
+			<span class="col-16 text-center">{$vo.appoint_time|toDate='Y-m-d H:i'}</span>
+			<span class="col-16 text-center">
+				<div style="overflow:hidden">
+					{$vo.appoint_remark}
+				</div> </span>
+		</li>
+	
+	</ul>
+</notempty>
+<if condition="($is_assigner) AND empty($vo['deal_userid'])">
+<div class="operate panel panel-default">
+	<div class="panel-heading clearfix">
+		<select id="deal_userid" name="deal_userid" style="width:100px;">
+			<volist name="user_list" id="v">
+				<option value="{$v.id}">{$v.name}</option>
+			</volist>
+		</select>
+		<a onclick="appoint();" class="btn btn-sm btn-primary">确认指派</a>
+	</div>
+	<div class="form-group panel-body">
+		<label class="col-sm-2 control-label" style="text-align:left;width:10%;">指派备注：</label>
+		<div class="col-sm-10">
+			<textarea name="appoint_remark" id="appoint_remark" class="col-xs-12" style="height:120px"></textarea>
+		</div>
+	</div>
+</div>
+</if>
+
+<a id="flow_ensure"></a>
+{:W('PageHeader',array('name'=>'处理情况','search'=>'N'))}
+<div class="ul_table border-bottom">
+<if condition="$vo['is_ensure']">
+	<ul>
+		<li class="thead">
+			<span class="col-9 text-center">处理人</span>
+			<span class="col-16 text-center">处理时间</span>
+			<span class="col-16 text-center">备注</span>
+		</li>
+		<li class="tbody">
+			<span style="width:90px;" class="text-center">{$vo.ensure_name}</span>
+			<span style="width:160px;" class="text-center">{$vo.update_time|toDate='Y-m-d H:i'}</span>
+			<span class="col-16 text-center">
+				<div style="overflow:hidden">
+					{$vo.remark}
+				</div> </span>
+		</li>
+	</ul>
+</if>
+<?php if(!$vo['is_ensure']):?>
+<if condition="($is_write eq 'b') AND ($folder eq 'assign') AND !empty($list['deal_userid'])">
+	<div class="operate panel panel-default">
+		<div class="panel-heading clearfix">
+			<div class="pull-left">
+				<a onclick="save();" class="btn btn-sm btn-primary">确认</a>
+			</div>
+		</div>
+		<div class="form-group panel-body">
+			<label class="col-sm-2 control-label" style="text-align:left;width:10%;">处理备注：</label>
+			<div class="col-sm-10">
+				<textarea name="remark" class="col-xs-12" style="height:120px"></textarea>
+			</div>
+		</div>
+	</div>
+</if>
+<?php endif;?>
+</div>
+</if>
+</form>
+<notempty name="to_confirm">
+	<a id="confirm"></a>
+	{:W('PageHeader',array('name'=>'审批意见','search'=>'N'))}
+	<form method="post" action="" name="form_confirm" id="form_confirm">
+		<input type="hidden" name="id" value="{$to_confirm.id}">
+		<input type="hidden" name="flow_id" value="{$vo.id}">
+		<input type="hidden" name="step" value="{$to_confirm.step}">
+		<div class="operate panel panel-default">
+			<div class="panel-heading clearfix">
+				<div class="pull-left">
+					<a onclick="go_return_url();" class="btn btn-sm btn-primary">返回</a>
+				</div>
+				<div class="pull-right">
+<!-- 					<div class="btn-group">
+						<a class="btn btn-sm btn-warning dropdown-toggle" data-toggle="dropdown" href="#">退回到&nbsp;<span class="fa fa-caret-down"></span> </a>
+						<ul class="dropdown-menu col-5">
+							<volist name="confirmed" id="vo">
+							<li onclick="back_to('{$vo.emp_no}');">
+								<a>{$vo.user_name}</a>
+							</li>
+							</volist>
+							<li onclick="back_to('{$emp_no}');">
+								<a>{$user_name}</a>
+							</li>
+						</ul>
+					</div> -->
+					<a onclick="reject();" class="btn btn-sm btn-danger">否决</a>
+					|
+					<a onclick="approve();" class="btn btn-sm btn-primary">同意</a>
+				</div>
+			</div>
+			<div class="form-group panel-body">
+				<label class="col-sm-2 control-label" style="text-align:left;width:10%;">审批意见：</label>
+				<div class="col-sm-10">
+					<textarea name="comment" class="col-xs-12" style="height:120px"></textarea>
+				</div>
+			</div>
+		</div>
+	</form>
+	
+</notempty>

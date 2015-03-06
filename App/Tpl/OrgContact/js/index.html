@@ -1,0 +1,39 @@
+<script>
+	$(document).ready(function() {
+		set_return_url();
+		var status = $('#statusK').val();
+		$("#status").val(status);
+	}); 
+</script>
+<script type="text/javascript" src="/Public/js/linkagesel.js"></script>
+<script language="javascript">
+$(document).ready(function(){
+	if($('#search_key').val()==1){
+		$("#adv_search").removeClass("display-none");
+	}
+	new LinkageSel({
+		data: {$category_tree},
+		select: ["select[name='category_id_0']", "select[name='category_id_1']", "select[name='category_id_2']"],
+		head: '请选择...',
+		minWidth: 100,
+		maxWidth: 100,
+		fixWidth: 100,
+		loaderImg: '/Public/img/ui-anim_basic_16x16.gif',
+		autoHide: true,
+		level: 3,
+		defVal: [{$category_linkage.defVal}],
+		root: [{$category_linkage.root}]
+	});
+	
+	$("select[name='category_id_0']").change(function(e) {
+		var value = $(this).val();
+		
+		if (value == 69) {
+			$("select[name='level_id']").parent().parent().show();
+		} else {
+			$("select[name='level_id']").parent().parent().hide();
+			$("select[name='level_id']").find("option[value='']").attr("selected", true);
+		}
+	});
+});
+</script>

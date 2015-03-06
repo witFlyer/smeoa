@@ -1,0 +1,12 @@
+	<div class="form-group">
+		<label class="col-sm-2 control-label" for="field_{$name}">{$name}</label>
+		<?php if($name=="临时代理人" || $name=="请假天数"):?>
+		<div class="col-sm-2">
+			{:W('FlowControl',$data)}
+		</div>
+		<?php else:?>
+		<div class="col-sm-10">
+			{:W('FlowControl',$data)}
+		</div>
+		<?php endif;?>
+	</div>

@@ -1,0 +1,39 @@
+<layout name='Layout/ace_popup' />
+<div class="panel panel-default ">
+	<div class="panel-heading clearfix">
+		<div class="pull-right">
+			<a onclick="myclose();" class="btn btn-sm btn-primary">关闭</a>
+		</div>
+	</div>
+	<div class="panel-body">
+		
+		<form id="form_data" name="form_data" method="post" class="form-horizontal">
+			<input type="hidden" name="shareholder[org_id]" value="{$org_id}" />
+			<input type="hidden" name="shareholder[id]" value="{$id}" />
+			<input type="hidden" name="shareholder[opmode]" value="edit" />
+			<input type="hidden" id="modify_id" name="modify_id" value="{:get_user_id()}">
+			<table class="table table-bordered">
+				<tr>
+					<th style="line-height: 30px;">股东名称 <font color="red">*</font></th>
+					<td colspan="3"><input type="text" name="shareholder[name]" value="{$name}" check="require" msg="请输入股东名称" style="width:100%" /></td>
+				</tr>
+				<tr>
+					<th style="line-height: 30px;">出资额（万元）</th>
+					<td>
+						<input type="text" name="shareholder[contribution]" value="{$contribution}" msg="请输入出资额" />
+					</td>
+					<th style="line-height: 30px;">股权比例（%）</th>
+					<td>
+						<input type="text" name="shareholder[proportion]" value="{$proportion}" msg="请输入股权比例" /> %
+					</td>
+				</tr>
+			</table>
+
+			<div class="action" style="margin-top: 10px; text-align: right;">
+				<input class="btn btn-sm btn-primary" type="button" value="保存编辑" onclick="save();" />
+			</div>
+			
+		</form>
+		
+	</div>
+</div>

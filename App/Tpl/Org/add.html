@@ -1,0 +1,159 @@
+<layout name='Layout/ace_layout' />
+{:W('PageHeader',array('name'=>'新建机构','search'=>'N'))}
+<div class="widget-box">
+	<form id="form_data" name="form_data" method="post" class="form-horizontal">
+		<input type="hidden" id="ajax" name="ajax" value="0">
+		<input type="hidden" id="opmode" name="opmode" value="add">
+		<input type="hidden" id="modify_id" name="modify_id" value="{:get_user_id()}">
+		<table class="table table-bordered">
+			<tr>
+				<th colspan="4" style="text-align: center; background: #E6E6E6;">机构名称</th>
+			</tr>
+			<tr>
+				<th style="line-height: 30px;">机构编码 <font color="red">*</font></th>
+				<td colspan="3"><input class="form-control" type="text" id="org_no" name="org_no"  check="require" msg="请输入机构编码" /></td>
+			</tr>
+			<tr>
+				<th style="line-height: 30px;">机构名称 <font color="red">*</font></th>
+				<td colspan="3"><input class="form-control input-sm" type="text" id="org_name" name="org_name" check="require" msg="请输入机构名称" /></td>
+			</tr>
+			<tr>
+				<th style="line-height: 30px;">机构类别</th>
+				<td colspan="3">
+					<select name="category_id_0" id="category_id_0" class="col-15"></select>
+					<select name="category_id_1" id="category_id_1" class="col-15"></select>
+					<select name="category_id_2" id="category_id_2" class="col-15"></select>
+					<select name="level_id" id="level_id" class="col-15" style="display: none">
+						<option value="">请选择机构能级</option>
+						{:fill_option($level_list)}
+					</select>
+				</td>
+			</tr>
+			<tr>
+				<th colspan="4" style="text-align: center; background: #E6E6E6;">基本信息</th>
+			</tr>
+			<tr>
+				<th style="line-height: 30px;">成立日期</th>
+				<td>
+					<input data-date-format="yyyy-mm-dd" type="text" id="establish_date" name="establish_date" readonly="readonly" class="input-date form-control" />
+				</td>
+				<th style="line-height: 30px;">享受政策</th>
+				<td>
+					<select name="is_policy" id="is_policy" class="col-10">
+						<option value="0">否</option>
+						<option value="1">是</option>
+					</select>
+				</td>
+			</tr>
+			<tr>
+				<th style="line-height: 30px;">工商注册号</th>
+				<td>
+					<input type="text" id="business_reg_no" name="business_reg_no" class="form-control" />
+				</td>
+				<th style="line-height: 30px;">税务登记号</th>
+				<td>
+					<input type="text" id="tax_reg_no" name="tax_reg_no" class="form-control" />
+				</td>
+			</tr>
+			<tr>
+				<th style="line-height: 30px;">注册资金</th>
+				<td>
+					<select name="reg_capital_unit" id="reg_capital_unit" class="col-10">
+						<option value="">请选择注册资金</option>
+						{:fill_option(C('ORG_REG_CAPITAL_UNIT'))}
+					</select>
+					<input type="text" id="reg_capital_value" name="reg_capital_value" class="col-10" />
+				</td>
+				<th style="line-height: 30px;">法定代表人</th>
+				<td>
+					<input type="text" id="legal_person" name="legal_person" class="form-control" />
+				</td>
+			</tr>
+			<tr>
+				<th style="line-height: 30px;">企业所在地</th>
+				<td colspan="3">
+					<select name="location_id" id="location_id" class="col-15">
+						<option value="">请选择企业所在地</option>
+						{:fill_option($location_list)}
+					</select>
+				</td>
+			</tr>
+			<tr>
+				<th style="line-height: 30px;">注册地址</th>
+				<td colspan="3">
+					<input type="text" id="reg_address" name="reg_address" class="form-control" />
+				</td>
+			</tr>
+			<tr>
+				<th style="line-height: 30px;">办公地址</th>
+				<td colspan="3">
+					<input type="text" id="office_address" name="office_address" class="form-control" />
+				</td>
+			</tr>
+			<tr>
+				<th style="line-height: 30px;">邮政编码</th>
+				<td>
+					<input type="text" id="postcode" name="postcode" class="form-control" />
+				</td>
+				<th style="line-height: 30px;">所属街道镇园区</th>
+				<td>
+					<input type="text" id="street" name="street" class="form-control" />
+				</td>
+			</tr>
+			<tr>
+				<th style="line-height: 30px;">税管地</th>
+				<td>
+					<input type="text" id="tax_tube_land" name="tax_tube_land" class="form-control" />
+				</td>
+				<th style="line-height: 30px;">税管所</th>
+				<td>
+					<input type="text" id="tax_tube_station" name="tax_tube_station" class="form-control" />
+				</td>
+			</tr>
+			<tr>
+				<th style="line-height: 30px;">公司电话</th>
+				<td>
+					<input type="text" id="office_tel" name="office_tel" class="form-control" />
+				</td>
+				<th style="line-height: 30px;">传真</th>
+				<td>
+					<input type="text" id="office_fax" name="office_fax" class="form-control" />
+				</td>
+			</tr>
+			<tr>
+				<th style="line-height: 60px;">公司简介</th>
+				<td colspan="3">
+					<textarea name="company_intro" id="company_intro" class="form-control" style="resize: none;"></textarea>
+				</td>
+			</tr>
+			<tr>
+				<th style="line-height: 30px;">状态</th>
+				<td colspan="3">
+					<input type="radio" value="0" id="status_0" name="status" checked /> 确立
+					<input type="radio" value="1" id="status_1" name="status" /> 迁移
+					<input type="radio" value="2" id="status_2" name="status" /> 注销
+				</td>
+			</tr>
+			<tr>
+				<th colspan="4" style="text-align: center; background: #E6E6E6;">金融促进会</th>
+			</tr>
+			<tr>
+				<th style="line-height: 30px;">是否会员</th>
+				<td>
+					<input type="radio" value="0" id="is_member_0" name="is_member" checked /> 否
+					<input type="radio" value="1" id="is_member_1" name="is_member" /> 是
+				</td>
+				<th style="line-height: 30px;">入会日期</th>
+				<td>
+					<input data-date-format="yyyy-mm-dd" type="text" id="membership_date" name="membership_date" readonly="readonly" class="input-date form-control" />
+				</td>
+			</tr>
+		</table>
+
+		<div class="action" style="margin-top: 10px;">
+			<input class="btn btn-sm btn-primary" type="button" value="保存" onclick="save();" />
+			<input  class="btn btn-sm btn-primary" type="button" value="取消" onclick="go_return_url();" />
+		</div>
+		
+	</form>
+</div>

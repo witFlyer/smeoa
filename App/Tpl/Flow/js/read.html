@@ -1,0 +1,102 @@
+<script type="text/javascript">
+	function approve() {
+		sendForm("form_confirm", "{:U('mark','action=approve')}", "{:U('read','id='.$vo['id'])}");
+	}
+
+	function reject() {
+		sendForm("form_confirm", "{:U('mark','action=reject')}", "{:U('read','id='.$vo['id'])}");
+	}
+
+	function back_to(emp_no) {
+		sendForm("form_confirm", fix_url("{:U('mark','action=back')}?emp_no=" + emp_no), "{:U('read','id='.$vo['id'])}");
+	}
+
+	function again_edit(){
+		$('#again_ensure').fadeIn();
+		$("textarea[name='remark']").focus();
+	}
+
+	function save() {
+		window.onbeforeunload = null;
+		var flow_name=$('input[name="flow_name"]').val();
+		if(flow_name=="外出备案"){
+			if(check_form("form_data")){
+				sendForm("form_data", "{:U('save')}");
+			}
+		}else{
+			var s_time=$('input[name="flow_field_14"]').val();
+		var e_time=$('input[name="flow_field_13"]').val();
+		var flow_field_12 =$('input[name="flow_field_12"]:checked').val();
+		var qinjia_count=$('input[name="flow_field_29"]').val();
+
+		var time={
+			'flow_field_14':s_time,
+			'flow_field_13':e_time,
+			'flow_field_12':flow_field_12,
+			'flow_field_29':qinjia_count,
+			'type'		   :$('#type').val(),
+			'user_id'	   :$('#user_id').val(),
+			'opmode'	   :$('#opmode').val(),
+		}
+
+		if((qinjia_count%0.5)!=0){
+			ui_error('请假天数必须为0.5的倍数');
+			return false;
+		}
+		if(s_time>e_time){
+			ui_error('开始时间不得大于结束时间');
+			return false;
+		}
+		if(check_form("form_data")){
+				$.post("{:U('profile/checkTime')}",time,function(result){
+					if(result==1){
+						ui_error('您的请假时间冲突');
+						return false;
+					}else if(result==2){
+						ui_error('您的年假不足');
+						return false;
+					}else{
+						sendForm("form_data", "{:U('save')}");
+					}
+				},'json');
+			}
+		}
+		}
+
+	function select_confirm() {
+		winopen("{:U('popup/confirm')}", 730, 750);
+	};
+
+	$(document).ready(function(){
+		set_return_url(document.location,1);
+		$("#confirm span").on("dblclick", function() {
+			$("#confirm span").last().find("b").remove();
+		});
+		$("#consult span").on("dblclick", function() {
+			$("#consult span").last().find("b").remove();
+		});
+		
+		//如果是抄送的，则可以编辑公文
+		if($('input[name="folder"]').val()=='receive' && $('input[name="is_write"]').val()){
+			$('.input-dateflow').datetimepicker({
+				language:"zh-CN",
+				format: "yyyy-mm-dd hh:00",
+				autoclose : true,
+				minView : 1,
+				todayHighlight:1,
+			});
+		
+		}else{
+			$('input').attr('readonly','readonly');
+			
+			$('input:radio[name="flow_field_12"]').each(function(i){
+				if(!$(this).attr('checked')){
+					$(this).attr('disabled','true');
+				}
+			});
+			$('textarea[name="flow_field_11"]').attr('readonly','readonly');
+			$('textarea[name="flow_field_38"]').attr('readonly','readonly');
+		}	
+		show_content();		
+	}); 
+</script>

@@ -1,0 +1,117 @@
+<script type="text/javascript">
+	function selectAjax(isAuto) {
+		var categoryId_0 = $("select[name='category_id_0']").val();
+		var categoryId_1 = $("select[name='category_id_1']").val();
+		var categoryId_2 = $("select[name='category_id_2']").val();
+		var levelId 	 = $("select[name='level_id']").val();
+		var orgName 	 = $("input[name='org_name']").val();
+		
+		sendAjax2("{:U('selectAjax')}", {
+			'category_id_0': categoryId_0,
+			'category_id_1': categoryId_1,
+			'category_id_2': categoryId_2,
+			'level_id': levelId,
+			'org_name': orgName
+		}, function(result) {
+			$("ul#srcOrgList").html('');
+			
+			if (result.data != null) {
+				for (var i = 0; i < result.data.length; i ++) {
+					$("ul#srcOrgList").append('<li value="'+ result.data[i].org_id +'" '+
+											  '    orgName="'+ result.data[i].org_name +'" '+
+											  '>'+ result.data[i].org_name +'</li>');
+				}
+			} else {
+				if (isAuto == 0 || isAuto == null) {
+					alert('未找到符合条件的机构!');
+				}
+			}
+		});
+	}
+	
+	function add() {
+		var count=$("#dstOrg select option").length;
+		if(count>=1){
+			return false;
+		}
+		$("ul#srcOrgList li.selected").each(function() {
+			var This		= $(this);
+			var orgId		= This.attr("value");
+			var orgName		= This.attr("orgName");
+			
+			This.removeClass("selected").addClass("right");
+			
+			$("#dstOrg select").append('<option value="'+ orgId +'" '+
+									   ' orgName="'+ orgName +'" '+
+									   '>'+ orgName +'</option>');
+		});
+	}
+	
+	function save() {
+		var obj = window.parent.document;
+		$('#org_wrap li',obj).remove();
+		$("#dstOrg select option").each(function() {
+			var This		= $(this);
+			var orgId		= This.attr("value");
+			var orgName		= This.attr("orgName");
+			
+			$("#org_wrap", parent.document).append('<li>'+
+									   '	<input type="hidden" id="org_id" name="org_id" value="'+ orgId +'" />'+
+									   '	<input type="hidden" id="org_name" name="org_name" value="'+ orgName +'" />'+
+									   '	<span>'+ orgName +'</span>'+
+									   '	<b><i class=\"fa fa-times\"></i></b>'+
+									   '</li>');
+		});
+		
+		myclose();
+	}
+	
+	$(document).ready(function() {
+		selectAjax(1);
+		$("ul#srcOrgList").delegate("li:not(.right)", "click", function(){
+			var This = $(this);
+			if(!This.siblings('li').hasClass("right")){
+				This.addClass("selected");
+			}
+			This.siblings('li').removeClass("selected");
+		});
+
+		$("#dstOrg select").delegate("option", "dblclick", function() {
+			var This		= $(this);
+			var value	= This.attr("value");
+			
+			$("#srcOrgList li[value='"+ value +"']").removeClass("right").addClass("selected");
+			This.remove();
+		});
+	});
+</script>
+<script type="text/javascript" src="/Public/js/linkagesel.js"></script>
+<script language="javascript">
+$(document).ready(function(){
+	new LinkageSel({
+		data: {$category_tree},
+		select: ["select[name='category_id_0']", "select[name='category_id_1']", "select[name='category_id_2']"],
+		head: '请选择...',
+		minWidth: 120,
+		maxWidth: 120,
+		fixWidth: 120,
+		loaderImg: '/Public/img/ui-anim_basic_16x16.gif',
+		autoHide: true,
+		level: 3,
+		defVal: [{$category_linkage.defVal}],
+		root: [{$category_linkage.root}]
+	});
+	
+	$("select[name='category_id_0']").change(function(e) {
+		var value = $(this).val();
+		
+		if (value == 69) {
+			$("select[name='level_id']").show();
+		} else {
+			$("select[name='level_id']").hide();
+			$("select[name='level_id']").find("option[value='']").attr("selected", true);
+		}
+	});
+});
+</script>
+

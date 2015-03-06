@@ -1,0 +1,58 @@
+<script type="text/javascript">
+	$(document).ready(function() {
+		$("#confirm span").on("dblclick", function() {
+			$("#confirm span").last().find("b").remove();
+		});
+		$("#consult span").on("dblclick", function() {
+			$("#consult span").last().find("b").remove();
+		});
+		$(document).on("click", "#org_wrap li b i", function() {
+			$('#org_wrap li').remove();
+		});
+		
+	}); 
+
+	function save(step){
+		window.onbeforeunload=null;
+		$("#confirm").val("");
+		$("#confirm_wrap  span").each(function() {
+			$("#confirm").val($("#confirm").val() + $(this).attr("data") + '|');
+		});
+		$("#confirm_name").val($("#confirm_wrap").html());
+
+		$("#refer").val("");
+		$("#refer_wrap  span").each(function() {
+			$("#refer").val($("#refer").val() + $(this).attr("data") + '|');
+		});
+		$("#refer_name").val($("#refer_wrap").html());
+
+		if ($("#confirm").val().length < 2) {
+			ui_error('请选择审批流程');
+			return false;
+		}
+		$("#step").val(step);
+		var start_date = $("#start_date").val();
+		var end_date = $("#end_date").val();
+		var room_id = $("#room_id").val();
+		var data = {
+			start_date : start_date,
+			end_date : end_date,
+			room_id : room_id
+		}
+		if(check_form("form_data")){
+		$.post("{:U(check_time)}",data,function (result){
+			if(result == 1){
+				ui_error('结束时间应大于开始时间');
+				return false;
+			}else if(result==2){
+				ui_error('当前会议室在此时间内已有预约');
+				return false;
+			}else{
+				sendForm("form_data", "{:U('save')}");
+			}
+		},'json');
+		}
+		
+	}
+
+</script>

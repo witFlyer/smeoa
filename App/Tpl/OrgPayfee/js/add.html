@@ -1,0 +1,74 @@
+<script type="text/javascript">
+	function save() {
+		window.onbeforeunload = null;
+		if (check_form("form_data")) {
+			var opMode 		= $("input[name='payfee[opmode]']");
+			var id 			= $("input[name='payfee[id]']");
+			var orgId 		= $("input[name='payfee[org_id]']");
+			var modify_id 		= $("input[name='modify_id']");
+			var year 		= $("select[name='payfee[year]']");
+			var amount 		= $("input[name='payfee[amount]']");
+			
+			sendAjax2("{:U('org_payfee/save')}", {
+				opmode: opMode.val(),
+				id: id.val(),
+				org_id: orgId.val(),
+				modify_id:modify_id.val(),
+				year: year.val(),
+				amount: amount.val()
+			}, function(result) {
+				
+				if (result.status == 1) {
+					
+					list(orgId.val());
+					myclose();
+					
+				} else {
+					alert(result.info);
+				}
+				
+			});
+			
+		}
+	}
+	
+	function list(orgId) {
+		$.ajax({
+			url: "{:U('org_payfee/ajaxList')}",
+			data: {
+				org_id: orgId
+			},
+			dataType: "json",
+			type: "POST",
+			async: false,
+			cache: false,
+			success: function(result) {
+				var obj = window.parent.document;
+				
+				$("div#flow-payfee ul li.tbody", obj).remove();
+				$("div#flow-payfee ul li.no-data", obj).remove();
+				var thead = $("div#flow-payfee ul li.thead", obj);
+				
+				if (result == null) {
+					thead.after('<li class="no-data">没找到数据</li>');
+				} else {
+					for (var i = 0; i < result.length; i++) {
+						var html = '<li class="tbody">'
+								 + '	<div rowId="'+ result[i].id +'">'
+								 + '		<div class="pull-left">'
+								 + '			<span><a href="javascript:payfeeEdit(\''+ result[i].id +'\')">'+ result[i].year +'</a></span>'
+								 + '		</div>'
+								 + '		<div class="pull-right">'
+								 + '			<span class="col-40 ">'+ (result[i].amount ? result[i].amount  : "-") +'</span>'
+								 + '			<span class="col-8"><a class="btn btn-sm btn-danger btn-delete" href="javascript:void(0);">删除</a></span>'
+								 + '		</div>'
+								 + '	</div>'
+								 + '</li>';
+						
+						thead.after(html);
+					}
+				}
+			}
+		});
+	}
+</script>

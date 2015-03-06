@@ -1,0 +1,108 @@
+<layout name='Layout/ace_layout' />
+<style>
+	/*td{
+		width:450px;
+	}*/
+	th{
+		width:100px;
+		text-align:center;
+		height:80px;
+		font-size:14px;
+	}
+	th .week{
+		border:none;
+		width:98px;
+		margin-top:10px;
+		color:#999;
+		font-weight:400;
+	}
+	th.mv-dayname{
+		color:#777777;
+		font-size:16px;
+	}
+	.st-bg-table-week ul{
+		overflow: hidden;
+		width:100%;
+		clear: both;
+		margin-left:0px;
+		list-style:none;
+	}
+	.st-bg-table-week ul li{
+		padding-left:10px;
+	}
+	.nav-list > li .submenu {
+  		display: block;
+	}
+</style>
+<div id="cal" class="day">
+	<div id="top" class="operate panel panel-default">
+		<div class="panel-body">
+			<div class="pull-left">
+				<a onclick="push_view('pre');" class="btn btn-sm btn-primary">上一周</a>
+				<a onclick="push_view('next');" class="btn btn-sm btn-primary">下一周</a>
+				<a onclick="push_view('');" class="btn btn-sm btn-primary"> 本周</a>
+				<input id="today" type="text" value="" style="width:180px;border:none;" disabled="true">
+				<input type="text" name="start_date" id="start_date" style="display:none" value="">
+				<input type="text" name="end_date" id="end_date" style="display:none" value="">
+				<input type="hidden" name="key_level" id="key_level" value="{$key_level}">
+			</div>
+			<div class="pull-right">
+				<a onclick="month_view();" class="btn btn-sm btn-primary"> 月视图 </a>
+				<a onclick="week_view();" class="btn btn-sm btn-primary">周视图</a>
+				<if condition="$is_write eq 1">
+				<a onclick="add();" class="btn btn-sm btn-primary"> 新建 </a>
+				</if>
+			</div>
+		</div>
+	</div>
+	<table class="mv-daynames-table" cellspacing="0" cellpadding="0">
+		<tbody>
+			<tr>
+				<th title="上午" class="mv-dayname" style="font-weight:bold;">上午</th>
+				<th title="下午" class="mv-dayname" style="font-weight:bold;">下午</th>
+			</tr>
+		</tbody>
+	</table>
+	 	<div class="col-sm-4" style="width:100%;">
+					<table class="st-bg-table-week" cellspacing="0" cellpadding="0">
+						<tbody>
+							<tr>
+								<th title="周一"> 周一 <input class="week 1" type='text' value=''></th>
+								<td class="st-bg" style="border-top:1px solid #dddddd;"><ul id="UL1"></ul></td>
+								<td class="st-bg" style="border-top:1px solid #dddddd;"><ul id="UL2"></ul></td>
+							</tr>
+							<tr>
+								<th title="周二"> 周二  <input class="week 2" type='text' value=''></th>
+								<td class="st-bg"><ul id="UL3"></ul></td>
+								<td class="st-bg"><ul id="UL4"></ul></td>
+							</tr>
+							<tr>
+								<th title="周三"> 周三  <input class="week 3" type='text' value=''></th>
+								<td class="st-bg"><ul id="UL5"></ul></td>
+								<td class="st-bg"><ul id="UL6"></ul></td>
+							</tr>
+							<tr>
+								<th title="周四"> 周四  <input class="week 4" type='text' value=''></th>
+								<td class="st-bg"><ul id="UL7"></ul></td>
+								<td class="st-bg"><ul id="UL8"></ul></td>
+							</tr>
+							<tr>
+								<th title="周五"> 周五  <input class="week 5" type='text' value=''></th>
+								<td class="st-bg"><ul id="UL9"></ul></td>
+								<td class="st-bg"><ul id="UL10"></ul></td>
+							</tr>
+							<tr>
+								<th title="周六"   style="color:#ff0000;"> 周六  <input class="week 6" type='text' value=''></th>
+								<td class="st-bg"><ul id="UL11"></ul></td>
+								<td class="st-bg"><ul id="UL12"></ul></td>
+							</tr>
+							<tr>
+								<th title="周日"   style="color:#ff0000;"> 周日  <input class="week 7" type='text' value=''></th>
+								<td class="st-bg"><ul id="UL13"></ul></td>
+								<td class="st-bg"><ul id="UL14"></ul></td>
+							</tr>
+						</tbody>
+					</table>
+		</div>
+
+</div>

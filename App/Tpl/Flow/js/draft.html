@@ -1,0 +1,22 @@
+<script type="text/javascript">
+	$(document).ready(function() {
+		set_return_url();
+	}); 
+	
+	function delD(id){
+		ui_confirm('确定要删除吗?',function(){
+			var data={
+				'id':id	
+			};
+			$.post('{:U("flow/del_draft")}',data,function(result){
+				if(result){
+					$('#li_'+id).fadeOut();
+				}else{
+					alert("删除失败");
+					return false;
+				}
+			},'json');
+
+		});
+	}
+</script>

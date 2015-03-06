@@ -1,0 +1,112 @@
+<layout name='Layout/ace_layout' />
+{:W('PageHeader',array('name'=>'机构首页','search'=>'N'))}
+
+<style type="text/css">
+.row li.list_data{
+	width: 100%;
+}
+.row li.list_data a{
+	color: #3399FF;
+}
+.row span.name{
+	margin-bottom: 10px;
+}
+.row .org_box{
+	margin-left: 30px;
+	text-align: center;
+	width: 50%;
+	padding: 8px 15px;
+	background: #ddd;
+	line-height: 20px;
+	margin-bottom: 10px;
+}
+.row .org_box span{
+	font-size: 15px;
+	margin-right: 10px;
+}
+.row .org_box span.count{
+	color: #3399FF;
+}
+.row #t1{
+	width: 30%;
+}
+.row #t2{
+	width: 70%;
+}
+</style>
+<div class="row">
+	<div class="col-xs-12 col-sm-6 widget-container-span" id="t1">
+		<!-- 邮件开始 -->
+		<div class="widget-box" sort="11">
+			<div class="widget-header">
+				<h5 class="smaller">统 计</h5>
+			</div>
+			<div class="widget-body">
+				<div class="ul_table widget-main">
+					<ul class="nav nav-tabs" id="myTab" style="min-height: 250px;">
+						<div class="org_box">
+							<span>接 待：</span><span class="count">{$jiedai}</span>
+						</div>
+						<div class="org_box">
+							<span>拜 访：</span><span class="count">{$baifang}</span>
+						</div>
+						<div class="org_box">
+							<span>会 议：</span><span class="count">{$huiyi}</span>
+						</div>
+
+						<div class="org_box">
+							<span>其 他：</span><span class="count">{$qita}</span>
+						</div>
+						<div class="org_box">
+							<span>总 计：</span><span class="count">{$total}</span>
+						</div>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="col-xs-12 col-sm-6 widget-container-span" id="t2">
+		<!-- 邮件开始 -->
+		<div class="widget-box" sort="11">
+			<div class="widget-header">
+				<h5 class="smaller">机构最新动态</h5>
+			</div>
+			<div class="widget-body">
+				<div class="ul_table widget-main">
+					<ul class="nav nav-tabs" id="myTab" style="min-height: 250px;">
+					<empty name="list">
+						<li>
+							没找到数据
+						</li>
+					<else/>
+						<foreach name="list" item="v">
+							<li class="list_data">
+								<span class="name">机构(<a href="{:U('org/edit','id='. $v['org_id'])}#flow-base">{$v.org_id|get_org_name}</a>)</span>
+								<span class="name">{$v.do_type|get_org_dotype}了</span>
+								<span class="">{$v.info_type|get_info_typename}</span>
+								<span>(</span>
+								<span class="">
+								<if condition="$v['info_type'] eq 1">
+								<a href="{:U('org/edit','id='. $v['org_id'])}#flow-base">{:get_org_info($v['info_type'],$v['refer_id'])}</a>
+
+								<elseif condition="$v['info_type'] eq 2"/>
+								<a href="{:U('org/edit','id='. $v['org_id'])}#flow-shareholder">{:get_org_info($v['info_type'],$v['refer_id'])}</a>
+
+								<elseif condition="$v['info_type'] eq 3"/>
+								<a href="{:U('org/edit','id='. $v['org_id'])}#flow-contact">{:get_org_info($v['info_type'],$v['refer_id'])}</a>
+
+								<elseif condition="$v['info_type'] eq 4"/>
+								<a href="{:U('org/edit','id='. $v['org_id'])}#flow-executive">{:get_org_info($v['info_type'],$v['refer_id'])}</a>
+								</if>
+								</span>
+								<span class="name">)</span>
+								<span class="pull-right">{$v.time|toDate}</span>
+							</li>
+						</foreach>
+					</empty>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

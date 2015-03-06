@@ -1,0 +1,71 @@
+
+<notempty name="widget.jquery-ui">
+	<script src="__PUBLIC__/js/jquery-ui-1.10.3.custom.min.js"></script>
+	<script src="__PUBLIC__/js/jquery.ui.touch-punch.min.js"></script>
+</notempty>
+
+<notempty name="widget.date">
+	<script src="__PUBLIC__/js/date-time/bootstrap-datepicker.js"></script>
+	<script src="__PUBLIC__/js/date-time/locales/bootstrap-datepicker.zh-CN.js"></script>
+
+	<script src="__PUBLIC__/js/datetimepicker/js/bootstrap-datetimepicker.js"  charset="UTF-8"></script>
+	<script src="__PUBLIC__/js/datetimepicker/js/locales/bootstrap-datetimepicker.zh-CN.js"></script>
+	<link href="__PUBLIC__/js/datetimepicker/css/bootstrap-datetimepicker.css" rel="stylesheet">
+</notempty>
+
+<notempty name="widget.uploader">
+	<script type="text/javascript" src="__PUBLIC__/plupload/plupload.full.min.js"></script>
+	<script type="text/javascript" src="__PUBLIC__/plupload/plupload.setting.js"></script>
+</notempty>
+
+<notempty name="widget.editor">
+	<script type="text/javascript" src="__PUBLIC__/editor/kindeditor.js"></script>
+	<script type="text/javascript" src="__PUBLIC__/editor/lang/zh_CN.js"></script>
+	<script type="text/javascript" src="__PUBLIC__/editor/kindeditor.setting.js"></script>
+</notempty>
+<script src="__PUBLIC__/js/jquery.gritter.min.js"></script>
+<script src="__PUBLIC__/js/bootbox.min.js"></script>
+
+<script type="text/javascript">
+		$(document).ready(function() {
+			<notempty name="widget.date">
+				$('.input-date').datepicker({
+					format: "yyyy-mm-dd",
+					language:"zh-CN",
+					autoclose : true,
+				});
+				$('.input-dateflow').datetimepicker({
+					language:"zh-CN",
+					format: "yyyy-mm-dd hh:00",
+					autoclose : true,
+					minView : 1,
+					todayHighlight:1,
+					hoursDisabled:[0,1,2,3,4,5,6,7,8,19,20,21,22,23],
+				});
+				$('.input-dateEmail').datetimepicker({
+					language:"zh-CN",
+					format: "yyyy-mm-dd hh:ii",
+					autoclose : true,
+					todayHighlight:1,
+				});
+				$('.input-dateService').datetimepicker({
+					language:"zh-CN",
+					format: "yyyy-mm-dd hh:ii",
+					autoclose : true,
+					todayHighlight:1,
+					hoursDisabled:[0,1,2,3,4,5,6,7,8,19,20,21,22,23],
+				});
+				$(".input-daterange").datepicker({
+					 format: "yyyy-mm-dd",
+					 language:"zh-CN",
+					 keyboardNavigation: false,
+					 forceParse: false,
+					 autoclose: true,
+				});
+			</notempty>
+
+			<notempty name="widget.editor">
+				editor_init();
+			</notempty>
+	});
+</script>

@@ -1,0 +1,81 @@
+<script type="text/javascript">
+	function save() {
+		window.onbeforeunload=null;
+		if (check_form("form_data")) {
+			sendForm("form_data", "{:U('save')}");
+		}
+	}
+	function add() {
+		var realname = $("input[name='addRealname']").val();
+		var mobile	 = $("input[name='addMobile']").val();
+		
+		if (realname == '') {
+			alert('请输入姓名!');
+			return;
+		}
+		if (mobile == '') {
+			alert('请输入手机号码!');
+			return;
+		} else if ( ! /^((\(\d{3}\))|(\d{3}\-))?(13\d{9}$)|(14\d{9}$)|(15\d{9}$)|(17\d{9}$)|(18\d{9}$)/.test(mobile)) {
+			alert('手机格式错误!');
+			return;
+		}
+		
+		$("ul#orgList2").append('<li>'+
+								'	<input type="hidden" name="realname[]" value="'+ realname +'" />'+
+								'	<input type="hidden" name="mobile[]" value="'+ mobile +'" />'+
+								'	<input type="hidden" name="orgId[]" value="0" />'+
+								'	<input type="hidden" name="contactId[]" value="0" />'+
+								'	<span>'+ realname +'('+ mobile +')</span>'+
+								'	<a href="javascript:void(0);">移除</a>'+
+								'</li>');
+		
+		$("input[name='addRealname']").val("");
+		$("input[name='addMobile']").val("");
+	}
+	
+	function select() {
+		winopen("{:U('select')}", 730, 615);
+	}
+	
+	function initImport() {
+		var val = get_cookie('org_sms_import');
+		
+		if (val != null && val != '') {
+			var obj = eval(val);
+			
+			for (var i = 0; i < obj.length; i++) {
+				$("ul#orgList2").append('<li>'+
+										'	<input type="hidden" name="realname[]" value="'+ obj[i][0] +'" />'+
+										'	<input type="hidden" name="mobile[]" value="'+ obj[i][1] +'" />'+
+										'	<input type="hidden" name="orgId[]" value="0" />'+
+										'	<input type="hidden" name="contactId[]" value="0" />'+
+										'	<span>'+ obj[i][0] +'('+ obj[i][1] +')</span>'+
+										'	<a href="javascript:void(0);">移除</a>'+
+										'</li>');
+			}
+			
+			set_cookie('org_sms_import', null);
+		}
+	}
+	setInterval("initImport()", 1000);
+	
+	$(document).ready(function() {
+		set_return_url();
+		
+		$("ul.orgList").delegate("li a", "click", function(){
+			$(this).parent().remove();
+		});
+		
+		$("input[name='sendType']").change(function() {
+			var This = $(this);
+			var type = This.val();
+			
+			if (type == 1) {
+				$("#sendTimerDiv").show();
+			} else {
+				$("#sendTimerDiv").hide();
+			}
+		});
+	});
+</script>

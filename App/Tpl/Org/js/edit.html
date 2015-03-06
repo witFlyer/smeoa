@@ -1,0 +1,612 @@
+<script type="text/javascript" src="/Public/js/linkagesel.js"></script>
+<script type="text/javascript">
+$(document).ready(function(e) {
+	set_return_url();
+		
+	var hash = window.location.hash;
+	if (hash != '' && $("a[href='"+ hash +"']").length > 0) {
+		$("a[href='"+ hash +"']").click();
+	}
+	
+	$("div#flow-shareholder").delegate("li a.btn-delete", "click", function() {
+		var This  = $(this);
+		var rowId = This.parent().parent().parent().attr("rowId");
+		var orgId = $("input[name='org_id']").val();
+		
+		if (confirm("确定删除?")) {
+			
+			sendAjax2("{:U('org_shareholder/ajaxDelete')}", {
+				id: rowId
+			}, function(result) {
+				if (result.flag == 1) {
+					shareholderList(orgId);
+				}
+			});
+		}
+	});
+	$("div#flow-shareholder a.btn-add").click(function() {
+		var orgId = $("input[name='org_id']").val();
+		
+		winopen("{:U('org_shareholder/add')}?org_id="+ orgId, 730, 280);
+	});
+	$("div#flow-contact").delegate("li a.btn-delete", "click", function() {
+		var This  = $(this);
+		var rowId = This.parent().parent().parent().attr("rowId");
+		var orgId = $("input[name='org_id']").val();
+		
+		if (confirm("确定删除?")) {
+			
+			sendAjax2("{:U('org_contact/ajaxDelete')}", {
+				id: rowId
+			}, function(result) {
+				if (result.flag == 1) {
+					contactList(orgId);
+				}
+			});
+		}
+	});
+	$("div#flow-contact a.btn-add").click(function() {
+		var orgId = $("input[name='org_id']").val();
+		
+		winopen("{:U('org_contact/add')}?org_id="+ orgId, 730, 335);
+	});
+	$("div#flow-executive").delegate("li a.btn-delete", "click", function() {
+		var This  = $(this);
+		var rowId = This.parent().parent().parent().attr("rowId");
+		var orgId = $("input[name='org_id']").val();
+		
+		if (confirm("确定删除?")) {
+			
+			sendAjax2("{:U('org_executive/ajaxDelete')}", {
+				id: rowId
+			}, function(result) {
+				if (result.flag == 1) {
+					executiveList(orgId);
+				}
+			});
+		}
+	});
+	$("div#flow-executive a.btn-add").click(function() {
+		var orgId = $("input[name='org_id']").val();
+		winopen("{:U('org_executive/add')}?org_id="+ orgId, 730, 375);
+	});
+	$("div#flow-tax").delegate("li a.btn-delete", "click", function() {
+		var This  = $(this);
+		var rowId = This.parent().parent().parent().attr("rowId");
+		var orgId = $("input[name='org_id']").val();
+		
+		if (confirm("确定删除?")) {
+			
+			sendAjax2("{:U('org_tax/ajaxDelete')}", {
+				id: rowId
+			}, function(result) {
+				if (result.flag == 1) {
+					taxList(orgId);
+				}
+			});
+		}
+	});
+	$("div#flow-tax a.btn-add").click(function() {
+		var orgId = $("input[name='org_id']").val();
+		
+		winopen("{:U('org_tax/add')}?org_id="+ orgId, 730, 370);
+	});
+	$("div#flow-work").delegate("li a.btn-delete", "click", function() {
+		var This  = $(this);
+		var rowId = This.parent().parent().parent().attr("rowId");
+		var orgId = $("input[name='org_id']").val();
+		
+		if (confirm("确定删除?")) {
+			
+			sendAjax2("{:U('org_work/ajaxDelete')}", {
+				id: rowId
+			}, function(result) {
+				if (result.flag == 1) {
+					workList(orgId);
+				}
+			});
+		}
+	});
+	$("div#flow-work a.btn-add").click(function() {
+		var orgId = $("input[name='org_id']").val();
+		
+		winopen("{:U('org_work/add')}?org_id="+ orgId, 730, 574);
+	});
+	$("div#flow-subsidie").delegate("li a.btn-delete", "click", function() {
+		var This  = $(this);
+		var rowId = This.parent().parent().parent().attr("rowId");
+		var orgId = $("input[name='org_id']").val();
+		
+		if (confirm("确定删除?")) {
+			
+			sendAjax2("{:U('org_subsidie/ajaxDelete')}", {
+				id: rowId
+			}, function(result) {
+				if (result.flag == 1) {
+					subsidieList(orgId);
+				}
+			});
+		}
+	});
+	$("div#flow-subsidie a.btn-add").click(function() {
+		var orgId = $("input[name='org_id']").val();
+		
+		winopen("{:U('org_subsidie/add')}?org_id="+ orgId, 730, 380);
+	});
+	$("div#flow-comprehensive").delegate("li a.btn-delete", "click", function() {
+		var This  = $(this);
+		var rowId = This.parent().parent().parent().attr("rowId");
+		var orgId = $("input[name='org_id']").val();
+		
+		if (confirm("确定删除?")) {
+			
+			sendAjax2("{:U('org_comprehensive/ajaxDelete')}", {
+				id: rowId
+			}, function(result) {
+				if (result.flag == 1) {
+					comprehensiveList(orgId);
+				}
+			});
+		}
+	});
+	$("div#flow-comprehensive a.btn-add").click(function() {
+		var orgId = $("input[name='org_id']").val();
+		
+		winopen("{:U('org_comprehensive/add')}?org_id="+ orgId, 730, 380);
+	});
+	$("div#flow-payfee").delegate("li a.btn-delete", "click", function() {
+		var This  = $(this);
+		var rowId = This.parent().parent().parent().attr("rowId");
+		var orgId = $("input[name='org_id']").val();
+		
+		if (confirm("确定删除?")) {
+			
+			sendAjax2("{:U('org_payfee/ajaxDelete')}", {
+				id: rowId
+			}, function(result) {
+				if (result.flag == 1) {
+					payfeeList(orgId);
+				}
+			});
+		}
+	});
+	$("div#flow-payfee a.btn-add").click(function() {
+		var orgId = $("input[name='org_id']").val();
+		
+		winopen("{:U('org_payfee/add')}?org_id="+ orgId, 730, 240);
+	});
+
+	//居中
+	var obj = $("#sorry");//获得相应的Div对象
+    var x = ($('.row').width()-610)/2;
+    var y = ($('.row').height()-50)/2;
+    obj.css("top",y).css("left",x);  
+});
+</script>
+<script type="text/javascript">
+function save() {
+	window.onbeforeunload=null;
+	var org_id = $("#org_id").val();
+	var org_no = $("#org_no").val();
+	var org_name = $("#org_name").val();
+
+	var data = {
+		'org_id' : org_id,
+		'org_no' : org_no,
+		'org_name' : org_name
+	}
+	if (check_form("form_data")) {
+		$.post("{:U('org/same_org_edit')}",data,function(result){
+			if(result==1){
+				ui_error("机构编号已存在");
+				return false;
+			}else if(result==2){
+				ui_error("机构名称已存在");
+				return false;
+			}else{
+				sendForm("form_data", "{:U('save')}");
+			}
+		},'json')
+	}
+}
+
+function shareholderEdit(shareholderId) {
+	winopen("{:U('org_shareholder/edit')}?id="+ shareholderId, 730, 280);
+}
+
+function shareholderList(orgId) {
+	sendAjax2("{:U('org_shareholder/ajaxList')}", {
+		org_id: orgId
+	}, function(result) {
+		
+		$("div#flow-shareholder ul li.tbody").remove();
+		$("div#flow-shareholder ul li.no-data").remove();
+		var thead = $("div#flow-shareholder ul li.thead");
+		
+		if (result == null) {
+			thead.after('<li class="no-data">没找到数据</li>');
+		} else {
+			for (var i = 0; i < result.length; i++) {
+				var html = '<li class="tbody">'
+						 + '	<div rowId="'+ result[i].id +'">'
+						 + '		<div class="pull-left">'
+						 + '			<span><a href="javascript:shareholderEdit(\''+ result[i].id +'\')">'+ result[i].name +'</a></span>'
+						 + '		</div>'
+						 + '		<div class="pull-right">'
+						 + '			<span class="col-20 ">'+ (result[i].contribution ? result[i].contribution : "-") +'</span>'
+						 + '			<span class="col-20 ">'+ (result[i].proportion   ? result[i].proportion   : "-") +'</span>'
+						 + '			<span class="col-8"><a class="btn btn-sm btn-danger btn-delete" href="javascript:void(0);">删除</a></span>'
+						 + '		</div>'
+						 + '	</div>'
+						 + '</li>';
+				
+				thead.after(html);
+			}
+		}
+	});
+}
+
+function contactEdit(contactId) {
+	winopen("{:U('org_contact/edit')}?id="+ contactId, 730, 335);
+}
+
+function contactList(orgId) {
+	sendAjax2("{:U('org_contact/ajaxList')}", {
+		org_id: orgId
+	}, function(result) {
+		
+		$("div#flow-contact ul li.tbody").remove();
+		$("div#flow-contact ul li.no-data").remove();
+		var thead = $("div#flow-contact ul li.thead");
+		
+		if (result == null) {
+			thead.after('<li class="no-data">没找到数据</li>');
+		} else {
+			for (var i = 0; i < result.length; i++) {
+				var html = '<li class="tbody">'
+						 + '	<div rowId="'+ result[i].id +'">'
+						 + '		<div class="pull-left">'
+						 + '			<span><a href="javascript:contactEdit(\''+ result[i].id +'\')">'+ result[i].realname +'</a></span>'
+						 + '		</div>'
+						 + '		<div class="pull-right">'
+						 + '			<span class="col-15 ">'+ (result[i].post     ? result[i].post : "-") +'</span>'
+						 + '			<span class="col-15 ">'+ (result[i].tel      ? result[i].tel      : "-") +'</span>'
+						 + '			<span class="col-15 ">'+ (result[i].mobile   ? result[i].mobile   : "-") +'</span>'
+						 + '			<span class="col-25 ">'+ (result[i].email    ? result[i].email    : "-") +'</span>'
+						 + '			<span class="col-8"><a class="btn btn-sm btn-danger btn-delete" href="javascript:void(0);">删除</a></span>'
+						 + '		</div>'
+						 + '	</div>'
+						 + '</li>';
+				
+				thead.after(html);
+			}
+		}
+	});
+}
+
+function executiveEdit(executiveId) {
+	winopen("{:U('org_executive/edit')}?id="+ executiveId, 730, 375);
+}
+
+function executiveList(orgId) {
+	sendAjax2("{:U('org_executive/ajaxList')}", {
+		org_id: orgId
+	}, function(result) {
+		
+		$("div#flow-executive ul li.tbody").remove();
+		$("div#flow-executive ul li.no-data").remove();
+		var thead = $("div#flow-executive ul li.thead");
+		
+		if (result == null) {
+			thead.after('<li class="no-data">没找到数据</li>');
+		} else {
+			for (var i = 0; i < result.length; i++) {
+				var html = '<li class="tbody">'
+						 + '	<div rowId="'+ result[i].id +'">'
+						 + '		<div class="pull-left">'
+						 + '			<span><a href="javascript:executiveEdit(\''+ result[i].id +'\')">'+ result[i].realname +'</a></span>'
+						 + '		</div>'
+						 + '		<div class="pull-right">'
+						 + '			<span class="col-10 ">'+ (result[i].post     ? result[i].post : "-") +'</span>'
+						 + '			<span class="col-20 ">'+ (result[i].idcard   ? result[i].idcard   : "-") +'</span>'
+						 + '			<span class="col-10 ">'+ (result[i].tel      ? result[i].tel      : "-") +'</span>'
+						 + '			<span class="col-10 ">'+ (result[i].mobile   ? result[i].mobile   : "-") +'</span>'
+						 + '			<span class="col-25 ">'+ (result[i].email    ? result[i].email    : "-") +'</span>'
+						 + '			<span class="col-8"><a class="btn btn-sm btn-danger btn-delete" href="javascript:void(0);">删除</a></span>'
+						 + '		</div>'
+						 + '	</div>'
+						 + '</li>';
+				
+				thead.after(html);
+			}
+		}
+	});
+}
+
+function taxEdit(taxId) {
+	winopen("{:U('org_tax/edit')}?id="+ taxId, 730, 370);
+}
+
+function taxList(orgId) {
+	sendAjax2("{:U('org_tax/ajaxList')}", {
+		org_id: orgId
+	}, function(result) {
+		
+		$("div#flow-tax ul li.tbody").remove();
+		$("div#flow-tax ul li.no-data").remove();
+		var thead = $("div#flow-tax ul li.thead");
+		
+		if (result == null) {
+			thead.after('<li class="no-data">没找到数据</li>');
+		} else {
+			for (var i = 0; i < result.length; i++) {
+				var html = '<li class="tbody">'
+						 + '	<div rowId="'+ result[i].id +'">'
+						 + '		<div class="pull-left">'
+						 + '			<span><a href="javascript:taxEdit(\''+ result[i].id +'\')">'+ result[i].year +'</a></span>'
+						 + '		</div>'
+						 + '		<div class="pull-right">'
+						 + '			<span class="col-15 ">'+ (result[i].sales             ? result[i].sales             : "-") +'</span>'
+						 + '			<span class="col-15 ">'+ (result[i].value_added       ? result[i].value_added       : "-") +'</span>'
+						 + '			<span class="col-15 ">'+ (result[i].income            ? result[i].income            : "-") +'</span>'
+						 + '			<span class="col-15 ">'+ (result[i].individual_income ? result[i].individual_income : "-") +'</span>'
+						 + '			<span class="col-10 ">'+ (result[i].retained          ? result[i].retained          : "-") +'</span>'
+						 + '			<span class="col-10 ">'+ (result[i].num               ? result[i].num               : "-") +'</span>'
+						 + '			<span class="col-8"><a class="btn btn-sm btn-danger btn-delete" href="javascript:void(0);">删除</a></span>'
+						 + '		</div>'
+						 + '	</div>'
+						 + '</li>';
+				
+				thead.after(html);
+			}
+		}
+	});
+}
+
+function workEdit(workId) {
+	winopen("{:U('org_work/edit')}?id="+ workId, 730, 574);
+}
+
+function workList(orgId) {
+	sendAjax2("{:U('org_work/ajaxList')}", {
+		org_id: orgId	
+	}, function(result) {
+		
+		$("div#flow-work ul li.tbody").remove();
+		$("div#flow-work ul li.no-data").remove();
+		var thead = $("div#flow-work ul li.thead");
+		
+		if (result == null) {
+			thead.after('<li class="no-data">没找到数据</li>');
+		} else {
+			for (var i = 0; i < result.length; i++) {
+				var html = '<li class="tbody">'
+						 + '	<div rowId="'+ result[i].id +'">'
+						 + '		<div class="pull-left">'
+						 + '			<span><a href="javascript:workEdit(\''+ result[i].id +'\')">'+ (result[i].begin_time).pattern('yyyy-MM-dd') +'</a></span>'
+						 + '		</div>'
+						 + '		<div class="pull-right">'
+						 + '			<span class="col-30 ">'+ (result[i].address ? result[i].address : "-") +'</span>'
+						 + '			<span class="col-10 ">';
+						 
+				if (result[i].type == 1) {
+					html+= '接待';
+				} else if (result[i].type == 2) {
+					html+= '拜访';
+				} else {
+					html+= '-';
+				}
+						 
+					html+= '			</span>'
+						 + '			<span class="col-25 ">'+ (result[i].resume  ? result[i].resume  : "-") +'</span>'
+						 + '			<span class="col-15 ">'+ (result[i].person  ? result[i].person  : "-") +'</span>'
+						 + '			<span class="col-8"><a class="btn btn-sm btn-danger btn-delete" href="javascript:void(0);">删除</a></span>'
+						 + '		</div>'
+						 + '	</div>'
+						 + '</li>';
+				
+				thead.after(html);
+			}
+		}
+	});
+}
+
+function subsidieEdit(subsidieId) {
+	winopen("{:U('org_subsidie/edit')}?id="+ subsidieId, 730, 380);
+}
+
+function subsidieList(orgId) {
+	sendAjax2("{:U('org_subsidie/ajaxList')}", {
+		org_id: orgId
+	}, function(result) {
+		
+		$("div#flow-subsidie ul li.tbody").remove();
+		$("div#flow-subsidie ul li.no-data").remove();
+		var thead = $("div#flow-subsidie ul li.thead");
+		
+		if (result == null) {
+			thead.after('<li class="no-data">没找到数据</li>');
+		} else {
+			for (var i = 0; i < result.length; i++) {
+				var html = '<li class="tbody">'
+						 + '	<div rowId="'+ result[i].id +'">'
+						 + '		<div class="pull-left">'
+						 + '			<span><a href="javascript:subsidieEdit(\''+ result[i].id +'\')">'+ result[i].typeName +'</a></span>'
+						 + '		</div>'
+						 + '		<div class="pull-right">'
+						 + '			<span class="col-10 ">'+ (result[i].year      ? result[i].year      : "-") +'</span>'
+						 + '			<span class="col-10 ">'+ (result[i].num       ? result[i].num       : "-") +'</span>'
+						 + '			<span class="col-10 ">'+ (result[i].realname  ? result[i].realname  : "-") +'</span>'
+						 + '			<span class="col-15 ">'+ (result[i].amount    ? result[i].amount    : "-") +'</span>'
+						 + '			<span class="col-20 ">'+ (result[i].implement ? result[i].implement : "-") +'</span>'
+						 + '			<span class="col-8"><a class="btn btn-sm btn-danger btn-delete" href="javascript:void(0);">删除</a></span>'
+						 + '		</div>'
+						 + '	</div>'
+						 + '</li>';
+				
+				thead.after(html);
+			}
+		}
+	});
+}
+
+function comprehensiveEdit(comprehensiveId) {
+	winopen("{:U('org_comprehensive/edit')}?id="+ comprehensiveId, 730, 380);
+}
+
+function comprehensiveList(orgId) {
+	sendAjax2("{:U('org_comprehensive/ajaxList')}", {
+		org_id: orgId
+	}, function(result) {
+		
+		$("div#flow-comprehensive ul li.tbody").remove();
+		$("div#flow-comprehensive ul li.no-data").remove();
+		var thead = $("div#flow-comprehensive ul li.thead");
+		
+		if (result == null) {
+			thead.after('<li class="no-data">没找到数据</li>');
+		} else {
+			for (var i = 0; i < result.length; i++) {
+				var html = '<li class="tbody">'
+						 + '	<div rowId="'+ result[i].id +'">'
+						 + '		<div class="pull-left">'
+						 + '			<span><a href="javascript:comprehensiveEdit(\''+ result[i].id +'\')">'+ result[i].realname +'</a></span>'
+						 + '		</div>'
+						 + '		<div class="pull-right">'
+						 + '			<span class="col-10 ">'+ (result[i].typeName  ? result[i].typeName  : "-") +'</span>'
+						 + '			<span class="col-10 ">'+ (result[i].post      ? result[i].post      : "-") +'</span>'
+						 + '			<span class="col-20 ">'+ (result[i].implement ? result[i].implement : "-") +'</span>'
+						 + '			<span class="col-35 ">'+ (result[i].item      ? result[i].item      : "-") +'</span>'
+						 + '			<span class="col-8"><a class="btn btn-sm btn-danger btn-delete" href="javascript:void(0);">删除</a></span>'
+						 + '		</div>'
+						 + '	</div>'
+						 + '</li>';
+				
+				thead.after(html);
+			}
+		}
+	});
+}
+
+function payfeeEdit(payfeeId) {
+	winopen("{:U('org_payfee/edit')}?id="+ payfeeId, 730, 240);
+}
+
+function payfeeList(orgId) {
+	sendAjax2("{:U('org_payfee/ajaxList')}", {
+		org_id: orgId
+	}, function(result) {
+		
+		$("div#flow-payfee ul li.tbody").remove();
+		$("div#flow-payfee ul li.no-data").remove();
+		var thead = $("div#flow-payfee ul li.thead");
+		
+		if (result == null) {
+			thead.after('<li class="no-data">没找到数据</li>');
+		} else {
+			for (var i = 0; i < result.length; i++) {
+				var html = '<li class="tbody">'
+						 + '	<div rowId="'+ result[i].id +'">'
+						 + '		<div class="pull-left">'
+						 + '			<span><a href="javascript:payfeeEdit(\''+ result[i].id +'\')">'+ result[i].year +'</a></span>'
+						 + '		</div>'
+						 + '		<div class="pull-right">'
+						 + '			<span class="col-40 ">'+ (result[i].amount ? result[i].amount  : "-") +'</span>'
+						 + '			<span class="col-8"><a class="btn btn-sm btn-danger btn-delete" href="javascript:void(0);">删除</a></span>'
+						 + '		</div>'
+						 + '	</div>'
+						 + '</li>';
+				
+				thead.after(html);
+			}
+		}
+	});
+}
+	
+/**    
+ * 对Date的扩展，将 Date 转化为指定格式的String
+ * 月(M)、日(d)、12小时(h)、24小时(H)、分(m)、秒(s)、周(E)、季度(q) 可以用 1-2 个占位符    
+ * 年(y)可以用 1-4 个占位符，毫秒(S)只能用 1 个占位符(是 1-3 位的数字)
+ * eg: 
+ * (new Date()).pattern("yyyy-MM-dd hh:mm:ss.S") 	==> 2006-07-02 08:09:04.423
+ * (new Date()).pattern("yyyy-MM-dd E HH:mm:ss") 	==> 2009-03-10 二 20:09:04
+ * (new Date()).pattern("yyyy-MM-dd EE hh:mm:ss") 	==> 2009-03-10 周二 08:09:04
+ * (new Date()).pattern("yyyy-MM-dd EEE hh:mm:ss") 	==> 2009-03-10 星期二 08:09:04
+ * (new Date()).pattern("yyyy-M-d h:m:s.S") 		==> 2006-7-2 8:9:4.18
+ */
+String.prototype.pattern = function(fmt) {
+	var str = this.toString().replace(/-/g, "/");
+	
+	return (new Date(str)).pattern(fmt);
+};
+Date.prototype.pattern = function(fmt) {
+    var o = {
+		"M+" : this.getMonth() + 1, //月份
+		"d+" : this.getDate(), //日
+		"h+" : this.getHours() % 12 == 0 ? 12 : this.getHours() % 12, //小时
+		"H+" : this.getHours(), //小时
+		"m+" : this.getMinutes(), //分
+		"s+" : this.getSeconds(), //秒
+		"q+" : Math.floor((this.getMonth() + 3) / 3), //季度
+		"S"  : this.getMilliseconds() //毫秒
+    };
+    var week = {
+		"0" : "/u65e5",
+		"1" : "/u4e00",
+		"2" : "/u4e8c",
+		"3" : "/u4e09",
+		"4" : "/u56db",
+		"5" : "/u4e94",
+		"6" : "/u516d"
+    };
+    if (/(y+)/.test(fmt)) {
+        fmt = fmt.replace(RegExp.$1, (this.getFullYear() +"").substr(4 - RegExp.$1.length));
+    }
+    if (/(E+)/.test(fmt)) {
+        fmt = fmt.replace(RegExp.$1, ((RegExp.$1.length > 1) ? (RegExp.$1.length > 2 ? "/u661f/u671f" : "/u5468") : "") + week[this.getDay() +""]);
+    }
+    for (var k in o) {
+        if (new RegExp("("+ k +")").test(fmt)) {
+            fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00"+ o[k]).substr((""+ o[k]).length)));
+        }
+    }
+	
+    return fmt;
+};
+</script>
+<script language="javascript">
+$(document).ready(function(){
+	new LinkageSel({
+		data: {$category_tree},
+		select: ["select[name='category_id_0']", "select[name='category_id_1']", "select[name='category_id_2']"],
+		head: '请选择...',
+		minWidth: 100,
+		maxWidth: 100,
+		fixWidth: 100,
+		loaderImg: '/Public/img/ui-anim_basic_16x16.gif',
+		autoHide: true,
+		level: 3,
+		defVal: [{$category_linkage.defVal}],
+		root: [{$category_linkage.root}]
+	});
+	
+	$("select[name='category_id_0']").change(function(e) {
+		var value = $(this).val();
+		
+		if (value == 69) {
+			$("select[name='level_id']").show();
+		} else {
+			$("select[name='level_id']").hide();
+			$("select[name='level_id']").find("option[value='']").attr("selected", true);
+		}
+	});
+	
+	<if condition="$vo.category_id_0 eq 69">
+		$("select[name='level_id']").show();
+		$("select[name='level_id']").find("option[value='{$vo.level_id}']").attr("selected", true);
+	<else />
+		$("select[name='level_id']").hide();
+		$("select[name='level_id']").find("option[value='']").attr("selected", true);
+	</if>
+});
+</script>

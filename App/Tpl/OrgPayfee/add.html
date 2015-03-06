@@ -1,0 +1,36 @@
+<layout name='Layout/ace_popup' />
+<div class="panel panel-default ">
+	<div class="panel-heading clearfix">
+		<div class="pull-right">
+			<a onclick="myclose();" class="btn btn-sm btn-primary">关闭</a>
+		</div>
+	</div>
+	<div class="panel-body">
+		
+		<form id="form_data" name="form_data" method="post" class="form-horizontal">
+			<input type="hidden" name="payfee[org_id]" value="{$org_id}" />
+			<input type="hidden" name="payfee[id]" value="" />
+			<input type="hidden" name="payfee[opmode]" value="add" />
+			<input type="hidden" id="modify_id" name="modify_id" value="{:get_user_id()}">
+			<table class="table table-bordered">
+				<tr>
+					<th style="line-height: 30px;">所属年度 <font color="red">*</font></th>
+					<td>
+						<select name="payfee[year]" class="col-16" check="require" msg="请选择年度">
+							<option value="">请选择年度</option>
+							{:fill_option($year_list)}
+						</select>
+					</td>
+					<th style="line-height: 30px;">缴纳金额（万元）</th>
+					<td><input type="text" name="payfee[amount]" msg="请输入缴纳金额" /></td>
+				</tr>
+			</table>
+
+			<div class="action" style="margin-top: 10px; text-align: right;">
+				<input class="btn btn-sm btn-primary" type="button" value="添加" onclick="save();" />
+			</div>
+			
+		</form>
+		
+	</div>
+</div>

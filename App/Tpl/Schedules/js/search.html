@@ -1,0 +1,13 @@
+<script type="text/javascript">
+	$(document).ready(function(){
+		set_return_url();
+		if($('#search_key').val()==1){
+			$("#adv_search").removeClass("display-none");
+		}
+		$(function() {
+			$("li.tbody").each(function() {
+				$(this).css("background-color", schedule_bg($(this).attr("priority")));
+			});
+		});
+	}); 
+</script>

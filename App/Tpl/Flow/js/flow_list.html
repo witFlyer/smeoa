@@ -1,0 +1,234 @@
+<script type="text/javascript" src="__PUBLIC__/js/calendar.js"></script>
+<script type="text/javascript">
+	$(document).ready(function() {
+		push_view('');
+		set_return_url();
+	});
+	var d=0;
+	function push_view(k){
+		
+		var start_date ='';
+		var end_date ='';
+		
+		var time = new Date();
+		// alert(dateFormat(time));
+		switch(k){
+		case 'pre' :
+			d--;
+			time.setDate(time.getDate() - time.getDay() + 1+7*d);
+			start_date = dateFormat(time);
+			time.setDate(time.getDate() + 1);
+			start_date2 = dateFormat(time);
+			time.setDate(time.getDate() + 1);
+			start_date3 = dateFormat(time);
+			time.setDate(time.getDate() + 1);
+			start_date4 = dateFormat(time);
+			time.setDate(time.getDate() + 1);
+			start_date5 = dateFormat(time);
+			time.setDate(time.getDate() +1);
+			start_date6= dateFormat(time);
+			time.setDate(time.getDate() + 1);
+			end_date = dateFormat(time);
+			break;
+		case 'next':
+			d++;
+			time.setDate(time.getDate() - time.getDay() +1+7*d);
+			start_date = dateFormat(time);
+			time.setDate(time.getDate() + 1);
+			start_date2 = dateFormat(time);
+			time.setDate(time.getDate() + 1);
+			start_date3 = dateFormat(time);
+			time.setDate(time.getDate() + 1);
+			start_date4 = dateFormat(time);
+			time.setDate(time.getDate() + 1);
+			start_date5 = dateFormat(time);
+			time.setDate(time.getDate() +1);
+			start_date6= dateFormat(time);
+			time.setDate(time.getDate() + 1);
+			end_date =dateFormat(time);
+			break;
+		default:
+			d=0;
+			time.setDate(time.getDate() - time.getDay() + 1);
+			start_date =dateFormat(time);
+			time.setDate(time.getDate() + 1);
+			start_date2 = dateFormat(time);
+			time.setDate(time.getDate() + 1);
+			start_date3 = dateFormat(time);
+			time.setDate(time.getDate() + 1);
+			start_date4 = dateFormat(time);
+			time.setDate(time.getDate() + 1);
+			start_date5 = dateFormat(time);
+			time.setDate(time.getDate() +1);
+			start_date6= dateFormat(time);
+			time.setDate(time.getDate() + 1);
+			end_date = dateFormat(time);	
+		}
+		$('#start_date').val(start_date);
+		$('#end_date').val(end_date);
+		showdata();
+	}
+
+	function showdata() {
+		//获取本月的第一天
+		start_date1 = $('#start_date').val();
+		end_date1 = $('#end_date').val();
+		key_level=$('#key_level').val();
+
+		$('#today').val(start_date1+'~'+end_date1);
+		
+		
+		$('.week.1').val(start_date1);
+		$('.week.2').val(start_date2);
+		$('.week.3').val(start_date3);
+		$('.week.4').val(start_date4);
+		$('.week.5').val(start_date5);
+		$('.week.6').val(start_date6);
+		$('.week.7').val(end_date1);
+		
+		//一周的上下午
+		var date11 = strto_time(start_date1+' 00:00');
+		var date12 = strto_time(start_date1+' 12:00');
+		var date13 = strto_time(start_date1+' 13:00');
+		var date14 = strto_time(start_date1+' 23:00');
+
+		var date21 = strto_time(start_date2+' 00:00');
+		var date22 = strto_time(start_date2+' 12:00');
+		var date23 = strto_time(start_date2+' 13:00');
+		var date24 = strto_time(start_date2+' 24:00');
+		
+		var date31 = strto_time(start_date3+' 00:00');
+		var date32 = strto_time(start_date3+' 12:00');
+		var date33 = strto_time(start_date3+' 13:00');
+		var date34 = strto_time(start_date3+' 24:00');
+		
+		var date41 = strto_time(start_date4+' 00:00');
+		var date42 = strto_time(start_date4+' 12:00');
+		var date43 = strto_time(start_date4+' 13:00');
+		var date44 = strto_time(start_date4+' 24:00');
+		
+		var date51 = strto_time(start_date5+' 00:00');
+		var date52 = strto_time(start_date5+' 12:00');
+		var date53 = strto_time(start_date5+' 13:00');
+		var date54 = strto_time(start_date5+' 24:00');
+		
+		var date61 = strto_time(start_date6+' 00:00');
+		var date62 = strto_time(start_date6+' 12:00');
+		var date63 = strto_time(start_date6+' 13:00');
+		var date64 = strto_time(start_date6+' 24:00');
+		
+		var date71 = strto_time(end_date1+' 00:00');
+		var date72 = strto_time(end_date1+' 12:00');
+		var date73 = strto_time(end_date1+' 13:00');
+		var date74 = strto_time(end_date1+' 24:00');
+		
+		$.getJSON("{:U('json')}", {
+			start_date : start_date1,
+			end_date : end_date1,
+			key:key_level
+		}, function(data) {
+			var readF="'read'";
+			prev_date = '';
+			$(".row ul").html("");
+			if (data != null) {
+				$.each(data, function(i) {
+					html = '<li id=li_' + data[i].id + ' style="float:left;">';
+					html += '•&nbsp;';
+					html += '<a href="{:U(\'read\')}/id/'+data[i].id+'/fid/see"';
+					html += 'class="event_msg"  style="color:#3399FF;cursor:pointer;"  title="' + data[i].name + '">';
+					html += data[i].user_name;
+					if(data[i].type==39){
+						html += "(请假)"
+					}else if(data[i].type==43){
+						html += "(外出)"
+					}
+					html += ' </a>';
+					html += "</li>";
+					
+					//公文开始结束时间
+					var s=data[i].start_time;
+					var e=data[i].end_time;
+					
+					
+					if(date11<=e && date12>=s){
+						$("ul#UL1").append(html);
+					}
+					if(date13<=e && date14>=s){
+						$("ul#UL2").append(html);
+					}
+
+					if(date21<=e && date22>=s){
+						$("ul#UL3").append(html);
+					}
+					if(date23<=e && date24>=s){
+						$("ul#UL4").append(html);
+					}
+					
+					if(date31<=e && date32>=s){
+						$("ul#UL5").append(html);
+					}
+					if(date33<=e && date34>=s){
+						$("ul#UL6").append(html);
+					}
+					
+					if(date41<=e && date42>=s){
+						$("ul#UL7").append(html);
+					}
+					if(date43<=e && date44>=s){
+						$("ul#UL8").append(html);
+					}
+					
+					if(date51<=e && date52>=s){
+						$("ul#UL9").append(html);
+					}
+					if(date53<=e && date54>=s){
+						$("ul#UL10").append(html);
+					}
+					
+					if(date61<=e && date62>=s){
+						$("ul#UL11").append(html);
+					}
+					if(date63<=e && date64>=s){
+						$("ul#UL12").append(html);
+					}
+					
+					if(date71<=e && date72>=s){
+						$("ul#UL13").append(html);
+					}
+					if(date73<=e && date74>=s){
+						$("ul#UL14").append(html);
+					}
+				});
+			}
+		});
+	}
+	//匹配星期
+	function toDate(uYear, uMonth, uDay) {  
+        var arr = "日一二三四五六".split("");  
+        with(document.all) {  
+            var vYear = parseInt(uYear, 10);  
+            var vMonth = parseInt(uMonth, 10);        
+            var vDay = parseInt(uDay, 10);  
+        }  
+        var date = "星期"+arr[new Date(vYear,vMonth-1,vDay).getDay()];  
+        return  date;  
+      }
+    //日期格式化YYYY-mm-dd
+    function dateFormat(time){
+
+		str=time.getFullYear();
+		str+='-';
+		str+=(time.getMonth()+1)>9 ? (time.getMonth()+1) : '0'+(time.getMonth()+1);
+		str+='-';
+		str+=time.getDate()>9 ? time.getDate() : '0'+time.getDate();
+		return str;
+	}
+    function strto_time(str_time){
+        var new_str = str_time.replace(/:/g,'-');
+        new_str = new_str.replace(/ /g,'-');
+        var arr = new_str.split("-");
+        var datum = new Date(Date.UTC(arr[0],arr[1]-1,arr[2],arr[3]-8,arr[4]));
+        return strtotime = datum.getTime()/1000;
+    }
+	
+</script>

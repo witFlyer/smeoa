@@ -1,0 +1,180 @@
+<script type="text/javascript">
+	$(document).ready(function(e) {
+		changeRetained();
+		changeTotal ()
+		$("input[name='tax[sales]']").change(function(e) {
+			changeRetained();
+			changeTotal ()
+		});
+		$("input[name='tax[value_added]']").change(function(e) {
+			changeRetained();
+			changeTotal ()
+		});
+		$("input[name='tax[income]']").change(function(e) {
+			changeRetained();
+			changeTotal ()
+		});
+		$("input[name='tax[individual_income]']").change(function(e) {
+			changeTotal ()
+		});
+		$("input[name='tax[retained]']").change(function(e) {
+			changeRetained();
+		});
+	});
+	//合计
+	function changeTotal () {
+		var sales 				= $("input[name='tax[sales]']");
+		var valueAdded 			= $("input[name='tax[value_added]']");
+		var income 				= $("input[name='tax[income]']");
+		var individualIncome 	= $("input[name='tax[individual_income]']");
+		var total 				= $("input[name='tax[total]']");
+		var result				= 0
+
+		if ( ! isNaN(valueAdded.val()) && valueAdded.val() != '') {
+			result += parseFloat(valueAdded.val());
+		}
+		if ( ! isNaN(income.val()) && income.val() != '') {
+			result += parseFloat(income.val());
+		}
+		if ( ! isNaN(individualIncome.val()) && individualIncome.val() != '') {
+			result += parseFloat(individualIncome.val());
+		}
+		if ( ! isNaN(sales.val()) && sales.val() != '') {
+			result += parseFloat(sales.val());
+		}
+
+
+		result = parseInt(result * 100) / 100;
+		result = isNaN(result) ? '0.00' : result;
+		total.val(result);
+	}
+	function changeRetained() {
+		/**
+		 * 新区留存 计算公司
+		 * 
+		 * 增值税		16.25%
+		 * 企业所得税	20%
+		 * 个人所得税	22%
+		 * 营业税		65%
+		**/
+		
+		var sales 				= $("input[name='tax[sales]']");
+		var valueAdded 			= $("input[name='tax[value_added]']");
+		var income 				= $("input[name='tax[income]']");
+		var individualIncome 	= $("input[name='tax[individual_income]']");
+		var retained 			= $("input[name='tax[retained]']");
+		var result 				= 0;
+		
+		if ( ! isNaN(valueAdded.val()) && valueAdded.val() != '') {
+			result += parseFloat(valueAdded.val()) * 0.1625;
+		}
+		if ( ! isNaN(income.val()) && income.val() != '') {
+			result += parseFloat(income.val()) * 0.20;
+		}
+		if ( ! isNaN(individualIncome.val()) && individualIncome.val() != '') {
+			result += parseFloat(individualIncome.val()) * 0.22;
+		}
+		if ( ! isNaN(sales.val()) && sales.val() != '') {
+			result += parseFloat(sales.val()) * 0.65;
+		}
+		
+		result = parseInt(result * 100) / 100;
+		result = isNaN(result) ? '0.00' : result;
+		
+		retained.val(result);
+	}
+
+	function save() {
+		window.onbeforeunload = null;
+		if (check_form("form_data")) {
+			changeRetained();
+			$("input[name='tax[retained]']").attr("disabled", false);
+			
+			var opMode 		= $("input[name='tax[opmode]']");
+			var id 			= $("input[name='tax[id]']");
+			var orgId 		= $("input[name='tax[org_id]']");
+			var modify_id 		= $("input[name='modify_id']");
+			var year 				= $("select[name='tax[year]']");
+			var sales 				= $("input[name='tax[sales]']");
+			var valueAdded 			= $("input[name='tax[value_added]']");
+			var income 				= $("input[name='tax[income]']");
+			var individualIncome 	= $("input[name='tax[individual_income]']");
+			var retained 			= $("input[name='tax[retained]']");
+			var num 				= $("input[name='tax[num]']");
+			var total 				= $("input[name='tax[total]']");
+			
+			sendAjax2("{:U('org_tax/save')}", {
+				opmode: opMode.val(),
+				id: id.val(),
+				org_id: orgId.val(),
+				modify_id:modify_id.val(),
+				year: year.val(),
+				sales: sales.val(),
+				value_added: valueAdded.val(),
+				income: income.val(),
+				individual_income: individualIncome.val(),
+				retained: retained.val(),
+				num: num.val(),
+				total: total.val()
+			}, function(result) {
+				
+				if (result.status == 1) {
+					
+					list(orgId.val());
+					myclose();
+					
+				} else {
+					alert(result.info);
+				}
+				
+			});
+			
+		}
+	}
+	
+	function list(orgId) {
+		$.ajax({
+			url: "{:U('org_tax/ajaxList')}",
+			data: {
+				org_id: orgId
+			},
+			dataType: "json",
+			type: "POST",
+			async: false,
+			cache: false,
+			success: function(result) {
+				var obj = window.parent.document;
+				
+				$("div#flow-tax ul li.tbody", obj).remove();
+				$("div#flow-tax ul li.no-data", obj).remove();
+				var thead = $("div#flow-tax ul li.thead", obj);
+				
+				if (result == null) {
+					thead.after('<li class="no-data">没找到数据</li>');
+				} else {
+					for (var i = 0; i < result.length; i++) {
+						var html = '<li class="tbody">'
+								 + '	<div rowId="'+ result[i].id +'">'
+								 + '		<div class="pull-left">'
+								 + '			<span><a href="javascript:taxEdit(\''+ result[i].id +'\')">'+ result[i].year +'</a></span>'
+								 + '		</div>'
+								 + '		<div class="pull-right">'
+								 + '			<span class="col-15 ">'+ (result[i].sales             ? result[i].sales             : "-") +'</span>'
+								 + '			<span class="col-15 ">'+ (result[i].value_added       ? result[i].value_added       : "-") +'</span>'
+								 + '			<span class="col-15 ">'+ (result[i].income            ? result[i].income            : "-") +'</span>'
+								 + '			<span class="col-15 ">'+ (result[i].individual_income ? result[i].individual_income : "-") +'</span>'
+								 + '			<span class="col-15 ">'+ (result[i].total          ? result[i].total          : "-") +'</span>'
+								 + '			<span class="col-10 ">'+ (result[i].retained          ? result[i].retained          : "-") +'</span>'
+								 + '			<span class="col-10 ">'+ (result[i].num               ? result[i].num               : "-") +'</span>'
+								 + '			<span class="col-8"><a class="btn btn-sm btn-danger btn-delete" href="javascript:void(0);">删除</a></span>'
+								 + '		</div>'
+								 + '	</div>'
+								 + '</li>';
+						
+						thead.after(html);
+					}
+				}
+			}
+		});
+	}
+</script>

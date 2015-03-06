@@ -1,0 +1,48 @@
+<script type="text/javascript">
+	function popup_actor() {
+		winopen("{:U('popup/actor')}", 730, 574);
+	}
+
+	function select() {
+		winopen("{:U('select')}", 730, 615);
+	}
+	function save() {
+		window.onbeforeunload=null;
+		var s_time=$('input[name="start_date"]').val();
+		var e_time=$('input[name="end_date"]').val();
+		if(s_time>e_time){
+			ui_error('开始时间不得大于结束时间');
+			return false;
+		}
+
+		if (check_form("form_data")) {
+			 sendForm("form_data", "{:U('save')}");
+		}
+	}
+
+	$(document).ready(function() {
+		$(document).on("click", ".inputbox .address_list a.del", function() {
+			$(this).parent().parent().remove();
+		});
+		$(document).on("click", "#org_wrap li b i", function() {
+			$('#org_wrap li').remove();
+		});
+		fill_time("start_time");
+		fill_time("end_time");
+
+		$("#priority").val(0);
+		$("#slider-range-priority").slider({
+			range : "min",
+			min : 1,
+			max : 5,
+			value : 3,
+			slide : function(event, ui) {
+				$("#priority").val(ui.value);
+				$("div.slider_box div.ui-slider").css("background-color", schedule_bg(ui.value));
+				$("div.slider_box div.ui-widget-header").css("background-color", schedule_bg(ui.value));
+			}
+		});
+		$("div.slider_box div.ui-slider").css("background-color", schedule_bg(3));
+		$("div.slider_box div.ui-widget-header").css("background-color", schedule_bg(3));
+	}); 
+</script>

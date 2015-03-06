@@ -1,0 +1,699 @@
+<html>
+	<head>
+		<title>卡片验证</title>
+	</head>
+	<body>
+		<OBJECT classid=clsid:9431AA21-1C52-43CF-B0CD-886497990F92 width=0 height=0 align="center" codebase="/Data/ActiveX.cab#version=1,0,0,1" id="CActiveXCtrl" HSPACE=0 VSPACE=0></OBJECT>
+		<center><h3>验卡</h3></center>
+
+<fieldset>
+<legend><!--设备操作函数组-->操作</legend>
+<!--硬件版本号：-->
+<input type="hidden" name="Version" id="Account" maxlength="100" size="40" > 
+<!--产品序列号：-->
+<input type="hidden" name="Serial" id="Account" maxlength="100" size="40"> 
+<!--句柄信息：-->
+<input type="hidden" name="DeviceHandle" id="Account" maxlength="100" size="10" value="-1"> 
+<!--数据转换：-->
+<input type="hidden" name="Test1" id="Account" maxlength="255" size="20" value="C9EEDBDAC3F7CCA9"> 
+
+<form name="设备操作">
+<input type="button" onClick="javascript:OpenDevice(this)" value="打开设备" >
+<!--<input type="button" onClick="javascript:TestDevice()" value="Gary的设备测试" >-->
+<input type="button" onClick="javascript:TestDevice(this)" value="开始读卡" >
+<input type="button" onClick="javascript:CloseDevice(this)" value="关闭设备" disabled >
+<input type="button" value="保存信息" onClick="save(this);" disabled />
+<input type="button" onClick="javascript:RfBeep()" value="蜂鸣" style="display: none" >
+<input type="button" onClick="javascript:Hexasc()" value="hex_asc" style="display: none" >
+<input type="button" onClick="javascript:Aschex()" value="asc_hex" style="display: none" >
+
+</form>
+</fieldset>
+
+</br>
+
+<fieldset>
+<legend><!--操作M1卡函数组-->校验</legend>
+<label><!--密码类型：-->
+	<select name="keytypem1" id="st" style="position: absolute; top: -10000px;">
+    	<option value="0" SELECTED>A密码</option>
+    	<option value="1">B密码</option>
+   	</select>
+</label>
+<!--密码：-->
+<input type="hidden" name="PwdM1" id="Account" maxlength="12" size="20" value="AAAAFEFECCCC"> 
+<!--块地址：-->
+<input type="hidden" name="BlockM1" id="Account" maxlength="130" size="5" value="0">  
+<!--块地址2：-->
+<input type="hidden" name="BlockM2" id="Account2" maxlength="130" size="5" value="1">  
+<!--卡片UID：-->
+<input type="hidden" name="UidM1" id="Account" maxlength="130" size="20"> 
+<!--当前块值：-->
+<input type="hidden" name="NowValueM1" id="Account" maxlength="130" size="5" >  
+<!--值操作：-->
+<input type="hidden" name="NewValueM1" id="Account" maxlength="3000" size="5" value="100"> 
+<!--射频复位时间：-->
+<input type="hidden" name="resettime" id="Account" maxlength="300" size="5" value="10"> 
+<!--写入数据：-->
+<input type="hidden" name="WriteDataM1" id="Account" maxlength="3000" size="60" value="00112233445566778899AABBCCDDEEFF"> 
+<div style="clear: both;">
+<!--读出数据：--><span style="width: 60px; display: block; float: left;">MAC：</span>
+<input type="text" name="ReadDataM1" id="Account" maxlength="3000" size="60" style="float: left;" readonly>
+</div>
+<div style="clear: both;">&nbsp;</div>
+<div style="clear: both;">
+<!--读出数据2：--><span style="width: 60px; display: block; float: left;">卡号：</span>
+<input type="text" name="ReadDataM2" id="Account2" maxlength="3000" size="60" style="float: left;" readonly> 
+</div>
+<!--form name="M1卡操作">
+	<input type="button" onclick="javascript:RfReset()" value="射频复位" >
+<input type="button" onclick="javascript:RfCard()" value="寻卡" >
+<input type="button" onclick="javascript:RfAuthenticationKey()" value="校验密码" >
+<input type="button" onclick="javascript:RfRead()" value="读数据" >
+<input type="button" onclick="javascript:RfWrite()" value="写数据" >
+<input type="button" onclick="javascript:RfInitval()" value="初始化块值" >
+<input type="button" onclick="javascript:RfReadval()" value="读块值" >
+<input type="button" onclick="javascript:RfIncrement()" value="加值" >
+<input type="button" onclick="javascript:RfDecrement()" value="减值" >
+<input type="button" onclick="javascript:RfTransfer()" value="传送" >
+<input type="button" onclick="javascript:RfRestore()" value="回传" >
+<input type="button" onclick="javascript:RfHalt()" value="中止卡片" >
+</form-->
+</fieldset>
+<div style="clear: both; height: 50px; line-height: 50px;"></div>
+<div style="margin: 0 auto; width: 98%;">
+<table class="datatable" id="dataTables">
+	<thead>
+		<tr>
+			<th>ID</th>
+			<th>卡号</th>
+			<th>MAC</th>
+		</tr>
+	</thead>
+	<tbody>
+		
+	</tbody>
+</table>
+</div>
+
+<!--[if !IE]>-->
+	<script type="text/javascript">
+			window.jQuery || document.write("<script src='__PUBLIC__/js/jquery-2.1.0.min.js'>" + "<" + "/script>");
+	</script>
+<!-- <![endif]-->
+<!--[if IE]>
+<script type="text/javascript">
+	window.jQuery || document.write("<script src='__PUBLIC__/js/jquery-1.11.0.min.js'>"+"<"+"/script>");
+</script>
+<![endif]-->
+<script src="/Public/js/common.js"></script>
+
+<link rel="stylesheet" href="/Public/js/datatables/plugins.css" />
+<script src="/Public/js/datatables/plugins-min.js"></script>
+
+<style type="text/css">
+.dataTables_wrapper {
+	margin: 0 auto;
+}
+.dataTables_scrollBody thead {
+	/*display: none;*/
+	height: 1px;
+	overflow: hidden;
+}
+</style>
+
+<script type="text/javascript"> 
+var oTable;
+
+$(document).ready(function() {
+	oTable = $('table#dataTables').dataTable({
+		"oLanguage": {
+			"sLengthMenu": "每页显示：_MENU_ 条记录",
+			"sSearch": "检索：_INPUT_",
+			"sZeroRecords": "对不起，未找到相关结果！",
+			"sInfo": "共 _TOTAL_ 条记录",
+			"sInfoEmpty": "",
+			"sInfoFiltered": "(从 _MAX_ 条记录中检索)",
+			"sProcessing": "加载中...",
+			"oPaginate" : {
+				"sFirst": "首页",
+				"sPrevious": "上一页",
+				"sNext": "下一页",
+				"sLast": "末页"
+			}
+		},
+		"aLengthMenu": [[10, 15, 20, 30, 50, 100, -1], [10, 15, 20, 30, 50, 100, "所有"]],
+		"iDisplayLength": 20,
+		"aaSorting": [[0, "desc" ]],
+		"sPaginationType": "full_numbers",
+		"bPaginate": true,
+		"bFilter": false,
+		"bSort": false,
+		"bStateSave": true,
+		"bLengthChange": false,
+		"bAutoWidth": true,
+		"bDestroy": true,
+		"bRetrieve": true,
+		"bJQueryUI": true,
+		"sScrollX": "100%",
+//		"sScrollXInner": "150%",
+//		"sScrollY": "disabled",
+//		"bScrollInfinite": false,
+		"bScrollCollapse": true,
+		"bSortClasses": false,
+		"bProcessing": true,
+		"bServerSide": true,
+		"sServerMethod": "GET",
+		"bDeferRender": true,
+		"fnServerData": function(sUrl, aoData, fnCallback) {
+			$.ajax({
+				"url":  sUrl,
+				"data": aoData,
+				"dataType": "json",
+				"type": "GET",
+				"cache": false,
+				"contentType": "application/json",
+				"success": function(json) {
+					fnCallback(json);
+					
+					$(".datatable").css({
+						"visibility": "visible",
+						"width": "100%"
+					});
+					$(".dataTables_scrollHeadInner").css("width", "100%");
+				}
+			});
+		},
+		"fnCookieCallback": function(sName, oData, sExpires, sPath) {
+			if (oData.oSearch.sSearch != "") {
+				$("table#datatable tbody tr td").each(function(){
+					if ($(this).find("a, font").eq(0).end().length > 0) {
+						$(this).find("a, font").eq(0).end().html($(this).find("a, font").eq(0).end().html().replace(oData.oSearch.sSearch, '<i>'+ oData.oSearch.sSearch +'</i>'));
+					} else {
+						try{
+							$(this).html($(this).html().replace(oData.oSearch.sSearch, '<i>'+ oData.oSearch.sSearch +'</i>'));
+						}catch(e){}
+					}
+				});
+				
+				$("div.dataTables_filter input").attr("value", oData.oSearch.sSearch);
+			}
+			
+			for (var i = 0, length = oData.aoSearchCols.length; i < length; i++) {
+				if (oData.aoSearchCols[i].sSearch != "") {
+					$("table.dataTable tbody tr").each(function(){
+						var td = $(this).find("td").eq(i);
+						
+						if (td.find("a, font").eq(0).end().length > 0) {
+							td.find("a, font").eq(0).end().html(td.find("a, font").eq(0).end().html().replace(oData.aoSearchCols[i].sSearch, '<i>'+ oData.aoSearchCols[i].sSearch +'</i>'));
+						} else {
+							try{
+								td.html(td.html().replace(oData.aoSearchCols[i].sSearch, '<i>'+ oData.aoSearchCols[i].sSearch +'</i>'));
+							}catch(e){}
+						}
+						
+						$(this).find("th:eq("+ i +") input:eq(0)").attr("value", oData.aoSearchCols[i].sSearch);
+					});
+					
+					$("table.dataTable tfoot tr th:eq("+ i +") input:eq(0)").attr("value", oData.aoSearchCols[i].sSearch);
+				}
+			}
+			
+			return sName +"="+ JSON.stringify(oData) +"; expires="+ sExpires +"; path="+ sPath;
+		},
+		"fnRowCallback": function(nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+			if (typeof aData["id"] !== "undefined" && aData["id"] !== undefined) {
+				$('td:eq(0)', nRow).parent("tr").attr("id", aData["id"]);
+			}
+		},
+		"fnInitComplete": function() {
+			$(".datatable").css({
+				"visibility": "visible",
+				"width": "100%"
+			});
+			$(".dataTables_scrollHeadInner").css("width", "100%");
+			$(".dataTables_filter > label > input").addClass("text");
+		},
+		"aoColumnDefs": [
+			{
+				"aTargets": [0],
+				"bSortable": false,
+				"bSearchable": false,
+				"sClass": "left",
+				"mRender": function(data, type, row) {
+					if (row["id"] == null) return '';
+					
+					return row["id"];
+				}
+			},
+			{
+				"aTargets": [1],
+				"bSortable": false,
+				"bSearchable": false,
+				"sClass": "left",
+				"mRender": function(data, type, row) {
+					if (row["no"] == null) return '';
+					
+					return row["no"];
+				}
+			},
+			{
+				"aTargets": [2],
+				"bSortable": false,
+				"bSearchable": false,
+				"sClass": "left",
+				"mRender": function(data, type, row) {
+					if (row["mac"] == null) return '';
+					
+					return row["mac"];
+				}
+			}
+		],
+		"sAjaxSource": "{:U('card/xhr')}?r="+ Math.random(),
+		"aoColumns": [
+			{"mData": "id"},
+			{"mData": "no"},
+			{"mData": "mac"}
+		]
+	});
+	
+	// 窗口重置
+	$(window).resize(function(){
+		oTable.fnAdjustColumnSizing();
+	});
+});
+</script>
+
+<script type="text/javascript">
+	function save(obj) {
+		if (typeof(obj) == 'object') {
+			$(obj).val("正在保存...").attr("disabled", true);
+		}
+		
+		window.onbeforeunload=null;
+		
+		var noObj 	= $("input[name='ReadDataM2']");
+		var macObj 	= $("input[name='ReadDataM1']");
+		
+		if (noObj.val() == '') {
+			//ui_error("卡号不能为空!");
+			alert("卡号不能为空!");
+			
+			if (typeof(obj) == 'object') {
+				$(obj).val("保存信息").attr("disabled", false);
+			}
+			
+			return;
+		}
+		if (macObj.val() == '') {
+			//ui_error("MAC不能为空!");
+			alert("MAC不能为空!");
+			
+			if (typeof(obj) == 'object') {
+				$(obj).val("保存信息").attr("disabled", false);
+			}
+			
+			return;
+		}
+		
+		var data = {
+			no: noObj.val(),
+			mac: macObj.val(),
+			opmode: 'add'
+		};
+		if (check_form("form_data")) {
+			$.post("{:U('card/save_check')}",data, function(result) {
+				if (result == 1) {
+					//ui_error("卡号已存在");
+					alert("卡号已存在");
+					
+					if (typeof(obj) == 'object') {
+						$(obj).val("保存信息").attr("disabled", false);
+					}
+					
+					return false;
+				} else if (result == 2) {
+					//ui_error("MAC已存在");
+					alert("MAC已存在");
+					
+					if (typeof(obj) == 'object') {
+						$(obj).val("保存信息").attr("disabled", false);
+					}
+					
+					return false;
+				} else {
+					//sendForm("form_data", "{:U('save')}");
+					
+					sendAjax2("{:U('save')}", data, function(result) {
+						//ui_error(result.info);
+						alert(result.info);
+						
+						if (result.status == 1) {
+							noObj.val("");
+							macObj.val("");
+							
+							oTable.fnDraw();
+						}
+						if (typeof(obj) == 'object') {
+							$(obj).val("保存信息").attr("disabled", false);
+						}
+					});
+					
+				}
+			},'json')
+		}
+	}
+</script>
+
+<script language="javascript">
+function OpenDevice(obj)//打开设备
+{
+	var st = CActiveXCtrl.OpenDevice();
+	if((st == 0 || st < 0) && CActiveXCtrl.lErrorCode != 0)
+	{
+		Version.value = "";
+		Serial.value = "";
+		DeviceHandle.value = "-1";
+		alert("打开设备失败");
+	} else {
+		if ((st == 0 || st < 0)) {
+			alert("设备占有?");
+		}
+		
+		DeviceHandle.value = st;
+		var sver = CActiveXCtrl.GetVersion(DeviceHandle.value);
+		if(CActiveXCtrl.lErrorCode == 0)
+			Version.value = sver;
+		else
+			Version.value = "";
+			
+		var snr = CActiveXCtrl.GetSnr(DeviceHandle.value,16);
+		if(CActiveXCtrl.lErrorCode == 0)
+			Serial.value = snr;
+		else
+			Serial.value = "";
+        //alert("打开设备成功");
+		
+		if (typeof(obj) == 'object'){
+			$(obj).attr("disabled", true);
+			$(obj).next().next().attr("disabled", false);
+		}
+	}
+}
+
+function CloseDevice(obj)//关闭设备
+{
+	var ret = CActiveXCtrl.CloseDevice(DeviceHandle.value);
+	Version.value = "";
+	Serial.value = "";
+	DeviceHandle.value = "-1";
+	if(ret == 0)
+		//alert("关闭设备成功");
+		Version.value = "";
+		
+		
+		if (typeof(obj) == 'object'){
+			$(obj).attr("disabled", true);
+			$(obj).prev().prev().attr("disabled", false);
+		}
+		
+		
+	else
+		alert("关闭设备失败，错误码为：" + ret);
+}
+	
+function RfBeep()
+{
+	var ret = CActiveXCtrl.RfBeep(DeviceHandle.value,20);
+	if(CActiveXCtrl.lErrorCode == 0)
+	{
+		//alert("蜂鸣成功");
+	}
+	else
+	{
+		alert("蜂鸣失败，错误码为：" + CActiveXCtrl.lErrorCode);
+	}
+}
+
+function Hexasc()
+{
+	var ret = CActiveXCtrl.Hexasc(Test1.value,16);
+	if(CActiveXCtrl.lErrorCode == 0)
+	{
+		alert("Hexasc转换值为："+ret);
+	}
+	else
+	{
+		alert("转换失败，错误码为：" + CActiveXCtrl.lErrorCode);
+	}
+}
+
+function Aschex()
+{
+	var ret = CActiveXCtrl.Aschex(Test1.value,16);
+	if(CActiveXCtrl.lErrorCode == 0)
+	{
+		alert("Aschex转换值为："+ret);
+	}
+	else
+	{
+		alert("转换失败，错误码为：" + CActiveXCtrl.lErrorCode);
+	}
+}
+//----------------------------------------------			M1卡操作			-----------------------------------------------//
+
+function RfReset()
+{
+	var ret = CActiveXCtrl.RfReset(DeviceHandle.value,resettime.value);
+	if(CActiveXCtrl.lErrorCode == 0)
+	{
+		//alert("射频复位成功");
+	}
+	else
+	{
+		//alert("射频复位失败，错误码为：" + CActiveXCtrl.lErrorCode);
+	}
+}
+
+function RfCard()
+{
+	var ret = CActiveXCtrl.RfCard(DeviceHandle.value,0);
+	if(CActiveXCtrl.lErrorCode == 0)
+	{
+		//UidM1.value = CZx_32Ctrl.HexAsc(ret,4);
+		UidM1.value = ret;
+		//alert("寻卡成功");
+	}
+	else
+	{
+		UidM1.value = "";
+		//alert("寻卡失败，错误码为：" + CActiveXCtrl.lErrorCode);
+	}
+}
+
+function RfAuthenticationKey()
+{
+	var keytype = document.getElementById('keytypem1').value;	//获取下拉框当前选值
+	var ret = CActiveXCtrl.RfAuthenticationKey(DeviceHandle.value,keytype,BlockM1.value,PwdM1.value);
+	if(CActiveXCtrl.lErrorCode == 0)
+	{
+		//alert("校验密码成功");
+	}
+	else
+	{
+		//alert("校验密码失败，错误码为：" + CActiveXCtrl.lErrorCode);
+	}
+}
+
+
+function RfWrite()
+{
+	var ret = CActiveXCtrl.RfWrite(DeviceHandle.value,BlockM1.value,WriteDataM1.value);
+	if(ret == 0)
+	{
+		//alert("写数据成功");
+	}
+	else
+	{
+		alert("写数据失败，错误码为：" + CActiveXCtrl.lErrorCode);
+	}
+}
+
+function RfInitval()
+{
+	var ret = CActiveXCtrl.RfInitval(DeviceHandle.value,BlockM1.value,NewValueM1.value);
+	if(ret == 0)
+	{
+		//alert("初始化值成功");
+	}
+	else
+	{
+		alert("初始化值失败，错误码为：" + CActiveXCtrl.lErrorCode);
+	}
+}
+
+function RfReadval()
+{
+	var ret = CActiveXCtrl.RfReadval(DeviceHandle.value,BlockM1.value);
+	if(CActiveXCtrl.lErrorCode == 0)
+	{
+		NowValueM1.value = ret;
+		//alert("读值成功");
+	}
+	else
+	{
+		NowValueM1.value = "";
+		alert("读值失败，错误码为：" + CActiveXCtrl.lErrorCode);
+	}
+}
+
+function RfIncrement()
+{
+	var ret = CActiveXCtrl.RfIncrement(DeviceHandle.value,BlockM1.value,NewValueM1.value);
+	if(ret == 0)
+		alert("加值成功");
+	else
+		alert("加值失败，错误码为：" + CActiveXCtrl.lErrorCode);
+}
+
+function RfDecrement()
+{
+	var ret = CActiveXCtrl.RfDecrement(DeviceHandle.value,BlockM1.value,NewValueM1.value);
+	if(ret == 0)
+		alert("减值成功");
+	else
+		alert("减值失败，错误码为：" + CActiveXCtrl.lErrorCode);
+}
+
+function RfTransfer()
+{
+	var ret = CActiveXCtrl.RfTransfer(DeviceHandle.value,BlockM1.value);
+	if(ret == 0)
+		alert("传送成功");
+	else
+		alert("传送失败，错误码为：" + CActiveXCtrl.lErrorCode);
+}
+
+function RfRestore()
+{
+	var ret = CActiveXCtrl.RfRestore(DeviceHandle.value,BlockM1.value);
+	if(ret == 0)
+		alert("回传成功");
+	else
+		alert("回传失败，错误码为：" + CActiveXCtrl.lErrorCode);
+}
+
+function RfHalt()
+{
+	var ret = CActiveXCtrl.RfHalt(DeviceHandle.value);
+	if(ret == 0)
+		alert("中止卡片成功");
+	else
+		alert("中止卡片失败，错误码为：" + CActiveXCtrl.lErrorCode);
+}
+
+function RfRead()
+{
+	var ret = CActiveXCtrl.RfRead(DeviceHandle.value,BlockM1.value);
+	if(CActiveXCtrl.lErrorCode == 0)
+	{
+		ReadDataM1.value = ret;//CZx_32Ctrl.HexAsc(ret,17)
+		//alert("读数据成功:" + ret);
+	    //RfBeep();
+	}
+	else
+	{
+		ReadDataM1.value = "";
+		//alert("读数据失败，错误码为：" + CActiveXCtrl.lErrorCode);
+	    //RfBeep();
+	    //RfBeep();
+	}
+}
+
+function RfRead2()
+{
+	var ret = CActiveXCtrl.RfRead(DeviceHandle.value,BlockM2.value);
+	if(CActiveXCtrl.lErrorCode == 0)
+	{
+//		ReadDataM2.value = ret;//CZx_32Ctrl.HexAsc(ret,17)
+		ReadDataM2.value = ret.substr(0, 6);
+		//alert("读数据2成功:" + ret);
+//	    RfBeep();
+	}
+	else
+	{
+		ReadDataM2.value = "";
+		//alert("读数据失败，错误码为：" + CActiveXCtrl.lErrorCode);
+	    //RfBeep();
+	    //RfBeep();
+	}
+}
+
+function sleep(n)   
+{   
+    var start = new Date().getTime();   
+    while(true)   
+        if(new   Date().getTime()-start>n)
+            break;   
+}
+
+function TestDeviceEx(){
+    var i = 0;
+    (function(){
+        if(i>=5)
+        	{alert('doen!');return;}
+        alert(i);
+        i++;
+        window.setTimeout(arguments.callee,2000);
+    })();
+}
+
+function TestDevice(obj){
+    var i = 0;
+    (function(){
+        if(i>=1000000)
+        	{alert('doen!');return;}
+        //alert(i);
+        OpenDevice();
+		RfReset();
+		RfCard();
+		RfAuthenticationKey();
+		RfRead();
+    	OpenDevice();
+		RfReset();
+		RfCard();
+		RfAuthenticationKey();
+		RfRead2();
+        i++;
+        window.setTimeout(arguments.callee,2000);
+    })();
+	
+	if (typeof(obj) == 'object'){
+		$(obj).val("正在读卡...").attr("disabled", true);
+		$(obj).prev().attr("disabled", true);
+		$(obj).next().attr("disabled", true);
+		$(obj).next().next().attr("disabled", false);
+	}
+	
+}
+
+function TestDeviceold()//gary test
+{
+    OpenDevice();
+	RfReset();
+	RfCard();
+	RfAuthenticationKey();
+	RfRead();
+    OpenDevice();
+	RfReset();
+	RfCard();
+	RfAuthenticationKey();
+	RfRead2();
+}
+
+
+
+</script>
+        
+	</body>
+</html>

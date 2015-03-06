@@ -1,0 +1,25 @@
+<script type="text/javascript">
+	$(document).ready(function() {
+		set_return_url();
+		if($('#search_key').val()==1){
+			$("#adv_search").removeClass("display-none");
+		}
+	}); 
+	
+	function delD(id){
+		ui_confirm('确定要删除吗?',function(){
+			var data={
+				'id':id	
+			};
+			$.post('{:U("serviceType/del_draft")}',data,function(result){
+				if(result){
+					$('#li_'+id).fadeOut();
+				}else{
+					alert("删除失败");
+					return false;
+				}
+			},'json');
+
+		});
+	}
+</script>

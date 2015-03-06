@@ -1,0 +1,46 @@
+<script type="text/javascript">
+	function popup_actor() {
+		winopen("{:U('popup/actor')}", 730, 574);
+	}
+	function select(org_id) {
+		winopen("{:U('select')}", 730, 615);
+	}
+	function save(){
+		window.onbeforeunload=null;
+		if (check_form("form_data")) {
+			sendForm("form_data", "{:U('save')}");
+		}
+	}
+
+	$(document).ready(function() {
+		$(document).on("click", ".inputbox .address_list a.del", function() {
+			$(this).parent().parent().remove();
+		});
+		$(document).on("click", "#org_wrap li b i", function() {
+			$('#org_wrap li').remove();
+		});
+		fill_time("start_time");
+		fill_time("end_time");
+
+		$("#start_time option[value='{$vo.start_time}']").attr("selected", "selected");
+		$("#end_time option[value='{$vo.end_time}']").attr("selected", "selected");
+
+		$("#priority").val("{$vo.priority}");
+		$("#slider-range-priority").slider({
+			range : "min",
+			min : 1,
+			max : 5,
+			value : "{$vo.priority}",
+			slide : function(event, ui) {
+				$("#priority").val(ui.value);
+				$("div.slider_box div.ui-slider").css("background-color", schedule_bg(ui.value));
+				$("div.slider_box div.ui-widget-header").css("background-color", schedule_bg(ui.value));
+			}
+		});
+		$("div.slider_box div.ui-slider").css("background-color", schedule_bg("{$vo.priority}"));
+		$("div.slider_box div.ui-widget-header").css("background-color", schedule_bg("{$vo.priority}"));
+
+		$("select[name='type']").find("option[value='{$vo.type}']").attr("selected", true);
+
+	}); 
+</script>

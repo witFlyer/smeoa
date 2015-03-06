@@ -1,0 +1,33 @@
+<layout name='Layout/ace_layout' />
+{:W('PageHeader',array('name'=>array('编辑公文：',$vo['name']),'search'=>'N'))}
+<input type="hidden" id="actionName" name="actionName" >
+<form method='post' id="form_data" class="well form-horizontal">
+	<input type="hidden" id="id" name="id" value="{$id}">
+	<input type="hidden" id="opmode" name="opmode" value="edit">
+	<input type="hidden" id="ajax" name="ajax" value="1">
+	<input type="hidden" id="confirm" name="confirm" >
+	<input type="hidden" id="confirm_name" name="confirm_name" >
+
+	<div class="form-group col-xs-12">
+		<label class="col-sm-2 control-label" for="type">审批步骤：</label>
+		<div class="col-sm-10">
+			<div id="confirm_wrap" class="inputbox">
+				<a class="pull-right btn btn-link text-center" onclick="popup_flow();"> <i class="fa fa-user"></i> </a>
+				<div class="wrap" >
+					<span class="address_list">{$vo.confirm_name}</span>
+					<span class="text" >
+						<input class="letter" type="text"  >
+					</span>
+				</div>
+				<div class="search dropdown ">
+					<ul class="dropdown-menu"></ul>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="clearfix"></div>
+	<div class="action">
+		<input class="btn btn-sm btn-primary" type="button" value="保存" onclick="save();">
+		<input class="btn btn-sm btn-default" type="button" value="取消" onclick="go_return_url();">
+	</div>
+</form>

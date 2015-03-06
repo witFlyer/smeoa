@@ -1,0 +1,49 @@
+<layout name='Layout/ace_popup' />
+<div class="panel panel-default ">
+	<div class="panel-heading clearfix">
+		<div class="pull-right">
+			<a onclick="myclose();" class="btn btn-sm btn-primary">关闭</a>
+		</div>
+	</div>
+	<div class="panel-body">
+		
+		<form id="form_data" name="form_data" method="post" class="form-horizontal">
+			<input type="hidden" name="executive[org_id]" value="{$org_id}" />
+			<input type="hidden" name="executive[id]" value="" />
+			<input type="hidden" name="executive[opmode]" value="add" />
+			<input type="hidden" id="modify_id" name="modify_id" value="{:get_user_id()}">
+			<table class="table table-bordered">
+				<tr>
+					<th style="line-height: 30px;">姓名 <font color="red">*</font></th>
+					<td><input type="text" name="executive[realname]"  check="require" msg="请输入姓名" /></td>
+					<th style="line-height: 30px;">职务</th>
+					<td>
+						<input type="text" name="executive[post]"  msg="请输入职务" />
+					</td>
+				</tr>
+				<tr>
+					<th style="line-height: 30px;">固定电话</th>
+					<td><input type="text" name="executive[tel]" msg="请输入固定电话" /></td>
+					<th style="line-height: 30px;">移动电话</th>
+					<td><input type="text" name="executive[mobile]" msg="请输入移动电话" /></td>
+				</tr>
+				<tr>
+					<th style="line-height: 30px;">电子邮箱</th>
+					<td><input type="text" name="executive[email]" /></td>
+					<th style="line-height: 30px;">身份证</th>
+					<td><input type="text" name="executive[idcard]" /></td>
+				</tr>
+				<tr>
+					<th style="line-height: 30px;">高管简介</th>
+					<td colspan="3"><input class="form-control" type="text" name="executive[remark]"/></td>
+				</tr>
+			</table>
+
+			<div class="action" style="margin-top: 10px; text-align: right;">
+				<input class="btn btn-sm btn-primary" type="button" value="添加" onclick="save();" />
+			</div>
+			
+		</form>
+		
+	</div>
+</div>

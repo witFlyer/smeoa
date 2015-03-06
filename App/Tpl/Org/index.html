@@ -1,0 +1,165 @@
+<layout name='Layout/ace_layout' />
+{:W('PageHeader',array('name'=>'机构管理','search'=>'M'))}
+
+<form method="post" name="form_adv_search" id="form_adv_search">
+<input type="hidden" name="search_key" id="search_key" value="{$_POST['search_key']}">
+	<div class="adv_search panel panel-default  display-none"  id="adv_search">
+		<div class="panel-heading">
+			<div class="row">
+				<h4 class="col-xs-6">高级搜索</h4>
+				<div class="col-xs-6 text-right">
+					<a  class="btn btn-sm btn-info" onclick="submit_adv_search();">搜索</a>
+					<a  class="btn btn-sm " onclick="close_adv_search();">关闭</a>
+				</div>
+			</div>
+		</div>
+		<div class="panel-body">
+			<div class="form-group col-sm-6">
+				<label class="col-sm-4 control-label" for="org_name">机构名称：</label>
+				<div class="col-sm-8">
+					<input  class="form-control" type="text" id="org_name" name="org_name" value="{$_POST['org_name']}">
+				</div>
+			</div>
+			<div class="form-group col-sm-6">
+				<label class="col-sm-4 control-label" for="category_id_0">机构类别：</label>
+				<div class="col-sm-8">
+					<select name="category_id_0" id="category_id_0" class="col-10"></select>
+					<select name="category_id_1" id="category_id_1" class="col-10"></select>
+					<select name="category_id_2" id="category_id_2" class="col-10"></select>
+				</div>
+			</div>
+			<div class="form-group col-sm-6" style="display: none;">
+				<label class="col-sm-4 control-label" for="level_id">机构能级：</label>
+				<div class="col-sm-8">
+					<select name="level_id" id="level_id" class="col-10">
+						<option value="">--全部--</option>
+						{:fill_option($level_list,$_POST['level_id'])}
+					</select>
+				</div>
+			</div>
+			<div class="form-group col-sm-6">
+				<label class="col-sm-4 control-label" for="location_id">企业所在地：</label>
+				<div class="col-sm-8">
+					<select name="location_id" id="location_id" class="col-10">
+						<option value="">--全部--</option>
+						{:fill_option($location_list,$_POST['location_id'])}
+					</select>
+				</div>
+			</div>
+
+			<div class="form-group col-sm-6">
+				<label class="col-sm-4 control-label" for="status">状态：</label>
+				<div class="col-sm-8">
+					<select name="status" id="status" class="col-10">
+						<option value="">--全部--</option>
+						{:fill_option(array('0'=>'确立','1'=>'迁移','2'=>'注销'),$_POST['status'])}
+					</select>
+				</div>
+			</div>
+			<div class="form-group col-sm-6">
+				<label class="col-sm-4 control-label" for="is_member">是否会员：</label>
+				<div class="col-sm-8">
+					<select name="is_member" class="col-10">
+					<option value="">请选择...</option>
+					{:fill_option(array('1'=>'是','0'=>'否'),$_POST['is_member'])}
+					</select>
+				</div>
+			</div>
+			<div class="form-group col-sm-6">
+				<label class="col-sm-4 control-label" for="is_policy">享受政策：</label>
+				<div class="col-sm-8">
+					<select name="is_policy" id="is_policy" class="col-10">
+						<option value="">--全部--</option>
+						{:fill_option(array('1'=>'是','0'=>'否'),$_POST['is_policy'])}
+					</select>
+				</div>
+			</div>
+			<div class="form-group col-sm-6">
+				<label class="col-sm-4 control-label" for="establish_date">成立时间：</label>
+				<div class="col-sm-8">
+					<div class="input-daterange input-group" >
+					    <input type="text" class="input-sm form-control text-center" name="establish_date1" value="{$_POST['establish_date1']}" />
+						<span class="input-group-addon">-</span>
+						<input type="text" class="input-sm form-control text-center" name="establish_date2" value="{$_POST['establish_date2']}"/>
+					</div>
+				</div>
+			</div>
+			<div class="form-group col-sm-6">
+				<label class="col-sm-4 control-label" for="street">所属街道镇园区：</label>
+				<div class="col-sm-8">
+					<input  class="form-control" type="text" id="street" name="street" value="{$_POST['street']}">
+				</div>
+			</div>
+			
+		</div>
+	</div>
+</form>
+
+	<div class="operate panel panel-default">
+		<div class="panel-body">
+			<div class="pull-right">
+			<input type="hidden" value="{$map}" />
+				<a onclick="exportOrgAll()" class="btn btn-sm btn-primary">导出全部</a>
+			|
+				<a onclick="exportOrg()" class="btn btn-sm btn-primary">导出所选机构</a>
+			|
+				<a onclick="add()" class="btn btn-sm btn-primary">新增</a>
+			|
+			<a onclick="del()" class="btn btn-sm btn-danger">删除</a>
+			</div>
+		</div>
+	</div>
+<div class="ul_table message-container">
+	<ul>
+		<li class="thead">
+			<div class="pull-left">
+			<span class="col-10">
+					<label class="inline pull-left col-3">
+						<input id="id-toggle-all" class="ace" type="checkbox" name="id-toggle-all">
+						<span class="lbl"></span>
+					</label>		
+				</span>
+				<span>机构名称</span>
+			</div>
+			<div class="pull-right">
+				<span class="col-10">机构大类</span>
+				<span class="col-10">机构类别</span>
+				<span class="col-10">机构子类</span>
+				<span class="col-10">机构能级</span>
+				<span class="col-10">状态</span>
+			</div>
+		</li>
+		<empty name="list">
+			<li class="no-data">
+				没找到数据
+			</li>
+			<else/>
+			<form method="post" action="" name="form_data" id="form_data">
+				<foreach name="list" item="v">
+					<li class="tbody">
+						<div class="pull-left">
+							<span class="col-10">
+								<label class="inline pull-left col-3">
+									<input class="ace" type="checkbox" name="org_id[]" value="{$v.org_id}" />
+									<span class="lbl"></span>
+								</label>
+							</span>
+							<span><a href="{:U('edit','id='.$v['org_id'])}">{$v.org_name}</a></span>
+						</div>
+						<div class="pull-right">
+							<span class="col-10 "><empty name="v.category_name_0">-<else />{$v.category_name_0}</empty></span>
+							<span class="col-10 "><empty name="v.category_name_1">-<else />{$v.category_name_1}</empty></span>
+							<span class="col-10 "><empty name="v.category_name_2">-<else />{$v.category_name_2}</empty></span>
+							<span class="col-10 "><empty name="v.level_name">-<else />{$v.level_name}</empty></span>
+							<span class="col-10 "><if condition="($v.status eq '1')">迁移<elseif condition="($v.status eq 2)"/>注销<else />确立</if></span>
+						</div>
+					</li>
+				</foreach>
+			</form>
+			<div class="pagination">
+				{$page}
+			</div>
+		</empty>
+	</ul>
+</div>
+

@@ -1,0 +1,195 @@
+<script type="text/javascript" src="__PUBLIC__/js/calendar.js"></script>
+<script type="text/javascript">
+
+	$(document).ready(function() {
+
+		push_view('');
+		set_return_url();
+		$(document).on("click", "a.event_msg", (function() {
+			var msg_list = "";
+			current = $(this).attr('id');
+			$("a#" + current).parent().parent().find('a.event_msg').each(function() {
+				msg_list += $(this).attr("id") + "|";
+			});
+			winopen("{:U('read')}?id=" + $(this).attr('id') + "&list=" + msg_list, 730, 490);
+
+		}));
+	});
+	function add() {
+		window.open("{:U('add')}", "_self");
+	}
+	var d=0;
+	function push_view(k){
+		
+		var start_date ='';
+		var end_date ='';
+		
+		var time = new Date();
+		switch(k){
+		case 'pre' :
+			d--;
+			time.setDate(time.getDate() - time.getDay() + 1+7*d);
+			start_date = dateFormat(time);
+			time.setDate(time.getDate() + 6);
+			end_date = dateFormat(time);
+			break;
+		case 'next':
+			d++;
+			time.setDate(time.getDate() - time.getDay() +1+7*d);
+			start_date = dateFormat(time);
+			time.setDate(time.getDate() + 6);
+			end_date = dateFormat(time);
+			break;
+		default:
+			d=0;
+			time.setDate(time.getDate() - time.getDay() + 1);
+			start_date = dateFormat(time);
+			time.setDate(time.getDate() + 6);
+			end_date = dateFormat(time);
+		}
+		$('#start_date').val(start_date);
+		$('#end_date').val(end_date);
+		showdata();
+		
+	}
+
+	function showdata() {
+		//获取本月的第一天
+		start_date1 = $('#start_date').val();
+		end_date1 = $('#end_date').val();
+		$('#today').val(start_date1+'~'+end_date1);
+		$.getJSON("{:U('json')}", {
+			start_date : start_date1,
+			end_date : end_date1
+		}, function(data) {
+			prev_date = '';
+			$(".row ul").html("");
+			if (data != null) {
+				$.each(data, function(i) {
+					html = '<li id=li_' + data[i].id + ' style="float:left;">';
+					html += '•&nbsp;';
+					html += '<a id=' + data[i].id + ' class="event_msg" style="color:#3399FF;cursor:pointer;" title="' + data[i].name + '">';
+					html += data[i].start_time;
+					html += '~';
+					html += data[i].end_time;
+					html += "&nbsp;";
+					html += data[i].name;
+					html += ' </a>';
+					html += "</li>";
+					
+					var uYear = data[i].start_date.substr(0,4);
+					var uMonth = data[i].start_date.substr(5,2);
+					var uDay = data[i].start_date.substr(8,2);
+					var daySign = toDate(uYear, uMonth, uDay);
+					var start_hour = data[i].start_time.substr(0,2);
+					if(daySign =="星期一"){
+						if(start_hour<12){
+							prev_date = daySign;
+							$("ul#UL1").append(html);
+						}else{
+
+							prev_date = daySign;
+							$("ul#UL2").append(html);
+						}
+					}else if(daySign=="星期二"){
+						if(start_hour<12){
+
+							prev_date = daySign;
+							$("ul#UL3").append(html);
+						}else{
+
+							prev_date = daySign;
+							$("ul#UL4").append(html);
+						}
+					}else if(daySign=="星期三"){
+						if(start_hour<12){
+	
+							prev_date = daySign;
+							$("ul#UL5").append(html);
+						}else{
+	
+							prev_date = daySign;
+							$("ul#UL6").append(html);
+						}
+					}else if(daySign=="星期四"){
+						if(start_hour<12){
+
+							prev_date = daySign;
+							$("ul#UL7").append(html);
+						}else{
+
+							prev_date = daySign;
+							$("ul#UL8").append(html);
+						}
+					}else if(daySign=="星期五"){
+						if(start_hour<12){
+
+							prev_date = daySign;
+							$("ul#UL9").append(html);
+						}else{
+
+							prev_date = daySign;
+							$("ul#UL10").append(html);
+						}
+					}else if(daySign=="星期六"){
+						if(start_hour<12){
+
+							prev_date = daySign;
+							$("ul#UL11").append(html);
+						}else{
+
+							prev_date = daySign;
+							$("ul#UL12").append(html);
+						}
+					}else if(daySign=="星期日"){
+						if(start_hour<12){
+
+							prev_date = daySign;
+							$("ul#UL13").append(html);
+						}else{
+
+							prev_date = daySign;
+							$("ul#UL14").append(html);
+						}
+					}
+					
+				});
+			}
+		});
+	}
+	//匹配星期
+	function toDate(uYear, uMonth, uDay) {  
+        var arr = "日一二三四五六".split("");  
+        with(document.all) {  
+            var vYear = parseInt(uYear, 10);  
+            var vMonth = parseInt(uMonth, 10);        
+            var vDay = parseInt(uDay, 10);  
+        }  
+        var date = "星期"+arr[new Date(vYear,vMonth-1,vDay).getDay()];  
+        return  date;  
+      } 
+    //日期格式化YYYY-mm-dd
+    function dateFormat(time){
+
+		str=time.getFullYear();
+		str+='-';
+		str+=(time.getMonth()+1)>9 ? (time.getMonth()+1) : '0'+(time.getMonth()+1);
+		str+='-';
+		str+=time.getDate()>9 ? time.getDate() : '0'+time.getDate();
+		return str;
+	}
+
+
+	function month_view() {
+		window.open('__URL__', "_self");
+	}
+
+	function day_view() {
+		window.open("{:U('day_view')}", "_self");
+	}
+	
+	function week_view() {
+		window.open("{:U('week_view')}", "_self");
+	}
+	
+</script>

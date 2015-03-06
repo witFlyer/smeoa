@@ -1,0 +1,164 @@
+<layout name='Layout/ace_layout' />
+{:W('PageHeader',array('name'=>'短信群发记录','search'=>'M'))}
+<form method="post" name="form_adv_search" id="form_adv_search">
+<input type="hidden" name="search_key" id="search_key" value="{$_POST['search_key']}">
+	<div class="adv_search panel panel-default  display-none"  id="adv_search">
+		<div class="panel-heading">
+			<div class="row">
+				<h4 class="col-xs-6">高级搜索</h4>
+				<div class="col-xs-6 text-right">
+					<a  class="btn btn-sm btn-info" onclick="submit_adv_search();">搜索</a>
+					<a  class="btn btn-sm " onclick="close_adv_search();">关闭</a>
+				</div>
+			</div>
+		</div>
+		<div class="panel-body">
+			<div class="form-group col-sm-6">
+				<label class="col-sm-4 control-label" for="realname">姓名：</label>
+				<div class="col-sm-8">
+					<input  class="form-control" type="text" id="realname" name="realname" value="{$_POST['realname']}">
+				</div>
+			</div>
+			<div class="form-group col-sm-6">
+				<label class="col-sm-4 control-label" for="mobile">手机号码：</label>
+				<div class="col-sm-8">
+					<input  class="form-control" type="text" id="mobile" name="mobile" value="{$_POST['mobile']}">
+				</div>
+			</div>
+			<div class="form-group col-sm-6">
+				<label class="col-sm-4 control-label" for="is_send">状态：</label>
+				<div class="col-sm-8">
+					<select name="is_send" id="is_send" class="col-10" value="{$_POST['is_send']}">
+						<option value="">--全部--</option>
+						<option value="0">未发</option>
+						<option value="1">已发</option>
+						<option value="-1">失败</option>
+					</select>
+				</div>
+			</div>
+			<div class="form-group col-sm-6">
+				<label class="col-sm-4 control-label" for="send_message">短信内容：</label>
+				<div class="col-sm-8">
+					<input  class="form-control" type="text" id="send_message" name="send_message" value="{$_POST['send_message']}">
+				</div>
+			</div>
+		</div>
+	</div>
+</form>
+
+<div class="ul_table message-container">
+	<ul>
+		<li class="thead">
+			<div class="pull-left">
+				<span class="col-8">姓名</span>
+			</div>
+			<div class="pull-right">
+				<span class="col-16">手机号码</span>
+				<span class="col-38">短信内容</span>
+				<span class="col-16">创建时间</span>
+				<span class="col-16">发送时间</span>
+				<span class="col-6">状态</span>
+			</div>
+		</li>
+<script type="text/javascript">
+Number.prototype.unixTimeToLocaleString = function(){
+	var unixTime = this;
+	var unixTimestamp = new Date(unixTime * 1000);
+	
+	return unixTimestamp.toLocaleString();
+};
+
+String.prototype.unixTimeToLocaleString = function(){
+	return parseInt(this).unixTimeToLocaleString();
+};
+
+Number.prototype.unixTimeToDate = function(fmt) {
+	var unixTime = this;
+	var unixTimestamp = new Date(unixTime * 1000);
+	
+	return unixTimestamp.pattern(fmt);
+};
+
+String.prototype.unixTimeToDate = function(fmt){
+	return parseInt(this).unixTimeToDate(fmt);
+};
+
+/**    
+ * 对Date的扩展，将 Date 转化为指定格式的String
+ * 月(M)、日(d)、12小时(h)、24小时(H)、分(m)、秒(s)、周(E)、季度(q) 可以用 1-2 个占位符    
+ * 年(y)可以用 1-4 个占位符，毫秒(S)只能用 1 个占位符(是 1-3 位的数字)
+ * eg: 
+ * (new Date()).pattern("yyyy-MM-dd hh:mm:ss.S") 	==> 2006-07-02 08:09:04.423
+ * (new Date()).pattern("yyyy-MM-dd E HH:mm:ss") 	==> 2009-03-10 二 20:09:04
+ * (new Date()).pattern("yyyy-MM-dd EE hh:mm:ss") 	==> 2009-03-10 周二 08:09:04
+ * (new Date()).pattern("yyyy-MM-dd EEE hh:mm:ss") 	==> 2009-03-10 星期二 08:09:04
+ * (new Date()).pattern("yyyy-M-d h:m:s.S") 		==> 2006-7-2 8:9:4.18
+ */
+String.prototype.pattern = function(fmt) {
+	var str = this.toString().replace(/-/g, "/");
+	
+	return (new Date(str)).pattern(fmt);
+};
+Date.prototype.pattern = function(fmt) {
+    var o = {
+		"M+" : this.getMonth() + 1, //月份
+		"d+" : this.getDate(), //日
+		"h+" : this.getHours() % 12 == 0 ? 12 : this.getHours() % 12, //小时
+		"H+" : this.getHours(), //小时
+		"m+" : this.getMinutes(), //分
+		"s+" : this.getSeconds(), //秒
+		"q+" : Math.floor((this.getMonth() + 3) / 3), //季度
+		"S"  : this.getMilliseconds() //毫秒
+    };
+    var week = {
+		"0" : "/u65e5",
+		"1" : "/u4e00",
+		"2" : "/u4e8c",
+		"3" : "/u4e09",
+		"4" : "/u56db",
+		"5" : "/u4e94",
+		"6" : "/u516d"
+    };
+    if (/(y+)/.test(fmt)) {
+        fmt = fmt.replace(RegExp.$1, (this.getFullYear() +"").substr(4 - RegExp.$1.length));
+    }
+    if (/(E+)/.test(fmt)) {
+        fmt = fmt.replace(RegExp.$1, ((RegExp.$1.length > 1) ? (RegExp.$1.length > 2 ? "/u661f/u671f" : "/u5468") : "") + week[this.getDay() +""]);
+    }
+    for (var k in o) {
+        if (new RegExp("("+ k +")").test(fmt)) {
+            fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00"+ o[k]).substr((""+ o[k]).length)));
+        }
+    }
+	
+    return fmt;
+};
+</script>
+		<empty name="list">
+			<li class="no-data">
+				没找到数据
+			</li>
+			<else/>
+			<form method="post" action="" name="form_data" id="form_data">
+				<foreach name="list" item="v">
+					<li class="tbody">
+						<div class="pull-left">
+							<span class="col-8 ">{$v.realname}</span>
+						</div>
+						<div class="pull-right">
+							<span class="col-16 "><empty name="v.mobile">-<else />{$v.mobile}</empty></span>
+							<span class="col-38 " style="padding-right:8px;word-wrap:break-word;"><empty name="v.send_message">-<else />{$v.send_message}</empty></span>
+							<span class="col-16 "><empty name="v.create_time">-<else /><script>document.write('{$v.create_time}'.unixTimeToDate('yyyy-MM-dd HH:mm:ss'));</script></empty></span>
+							<span class="col-16 "><empty name="v.send_time">-<else /><script>document.write('{$v.send_time}'.unixTimeToDate('yyyy-MM-dd HH:mm:ss'));</script></empty></span>
+							<span class="col-6 "><if condition="($v.is_send eq '1')">已发<elseif condition="($v.is_send eq '-1')" />失败<else />未发</if></span>
+						</div>
+					</li>
+				</foreach>
+			</form>
+			<div class="pagination">
+				{$page}
+			</div>
+		</empty>
+	</ul>
+</div>
+

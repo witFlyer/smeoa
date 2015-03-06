@@ -1,0 +1,81 @@
+<script type="text/javascript">
+	function save() {
+		window.onbeforeunload=null;
+		if (check_form("form_data")) {
+			sendForm("form_data", "{:U('save')}");
+		}
+	}
+	function add() {
+		var realname = $("input[name='addRealname']").val();
+		var email	 = $("input[name='addEmail']").val();
+		
+		if (realname == '') {
+			alert('请输入姓名!');
+			return;
+		}
+		if (email == '') {
+			alert('请输入邮箱地址!');
+			return;
+		} else if ( ! /^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/.test(email)) {
+			alert('邮箱格式错误!');
+			return;
+		}
+		
+		$("ul#orgList2").append('<li>'+
+								'	<input type="hidden" name="realname[]" value="'+ realname +'" />'+
+								'	<input type="hidden" name="email[]" value="'+ email +'" />'+
+								'	<input type="hidden" name="orgId[]" value="0" />'+
+								'	<input type="hidden" name="contactId[]" value="0" />'+
+								'	<span>'+ realname +'('+ email +')</span>'+
+								'	<a href="javascript:void(0);">移除</a>'+
+								'</li>');
+		
+		$("input[name='addRealname']").val("");
+		$("input[name='addEmail']").val("");
+	}
+	
+	function select() {
+		winopen("{:U('select')}", 730, 574);
+	}
+	
+	function initImport() {
+		var val = get_cookie('org_email_import');
+		
+		if (val != null && val != '') {
+			var obj = eval(val);
+			
+			for (var i = 0; i < obj.length; i++) {
+				$("ul#orgList2").append('<li>'+
+										'	<input type="hidden" name="realname[]" value="'+ obj[i][0] +'" />'+
+										'	<input type="hidden" name="email[]" value="'+ obj[i][1] +'" />'+
+										'	<input type="hidden" name="orgId[]" value="0" />'+
+										'	<input type="hidden" name="contactId[]" value="0" />'+
+										'	<span>'+ obj[i][0] +'('+ obj[i][1] +')</span>'+
+										'	<a href="javascript:void(0);">移除</a>'+
+										'</li>');
+			}
+			
+			set_cookie('org_email_import', null);
+		}
+	}
+	setInterval("initImport()", 1000);
+	
+	$(document).ready(function() {
+		set_return_url();
+		
+		$("ul.orgList").delegate("li a", "click", function(){
+			$(this).parent().remove();
+		});
+		
+		$("input[name='sendType']").change(function() {
+			var This = $(this);
+			var type = This.val();
+			
+			if (type == 1) {
+				$("#sendTimerDiv").show();
+			} else {
+				$("#sendTimerDiv").hide();
+			}
+		});
+	});
+</script>

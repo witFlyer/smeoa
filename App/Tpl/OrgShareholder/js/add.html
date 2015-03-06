@@ -1,0 +1,77 @@
+<script type="text/javascript">
+	function save() {
+		window.onbeforeunload = null;
+		if (check_form("form_data")) {
+			var opMode 			= $("input[name='shareholder[opmode]']");
+			var id 				= $("input[name='shareholder[id]']");
+			var orgId 			= $("input[name='shareholder[org_id]']");
+			var modify_id 		= $("input[name='modify_id']");
+			var name 			= $("input[name='shareholder[name]']");
+			var contribution 	= $("input[name='shareholder[contribution]']");
+			var proportion 		= $("input[name='shareholder[proportion]']");
+			
+			sendAjax2("{:U('org_shareholder/save')}", {
+				opmode: opMode.val(),
+				id: id.val(),
+				org_id: orgId.val(),
+				modify_id:modify_id.val(),
+				name: name.val(),
+				contribution: contribution.val(),
+				proportion: proportion.val()
+			}, function(result) {
+				
+				if (result.status == 1) {
+					
+					list(orgId.val());
+					myclose();
+					
+				} else {
+					alert(result.info);
+				}
+				
+			});
+			
+		}
+	}
+	
+	function list(orgId) {
+		$.ajax({
+			url: "{:U('org_shareholder/ajaxList')}",
+			data: {
+				org_id: orgId
+			},
+			dataType: "json",
+			type: "POST",
+			async: false,
+			cache: false,
+			success: function(result) {
+				var obj = window.parent.document;
+				
+				$("div#flow-shareholder ul li.tbody", obj).remove();
+				$("div#flow-shareholder ul li.no-data", obj).remove();
+				var thead = $("div#flow-shareholder ul li.thead", obj);
+				
+				if (result == null) {
+					thead.after('<li class="no-data">没找到数据</li>');
+				} else {
+					for (var i = 0; i < result.length; i++) {
+						var html = '<li class="tbody">'
+								 + '	<div rowId="'+ result[i].id +'">'
+								 + '		<div class="pull-left">'
+								 + '			<span><a href="javascript:shareholderEdit(\''+ result[i].id +'\')">'+ result[i].name +'</a></span>'
+								 + '		</div>'
+								 + '		<div class="pull-right">'
+								 + '			<span class="col-20 ">'+ (result[i].contribution ? result[i].contribution : "-") +'</span>'
+								 + '			<span class="col-20 ">'+ (result[i].proportion   ? result[i].proportion   : "-") +'</span>'
+								 + '			<span class="col-8"><a class="btn btn-sm btn-danger btn-delete" href="javascript:void(0);">删除</a></span>'
+								 + '		</div>'
+								 + '	</div>'
+								 + '</li>';
+						
+						thead.after(html);
+					}
+				}
+			}
+		});
+	}
+</script>

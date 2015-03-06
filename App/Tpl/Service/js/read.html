@@ -1,0 +1,56 @@
+<script type="text/javascript">
+	function approve() {
+		sendForm("form_confirm", "{:U('mark','action=approve')}", "{:U('read','id='.$vo['id'])}");
+	}
+
+	function reject() {
+		sendForm("form_confirm", "{:U('mark','action=reject')}", "{:U('read','id='.$vo['id'])}");
+	}
+
+	function back_to(emp_no) {
+		sendForm("form_confirm", fix_url("{:U('mark','action=back')}?emp_no=" + emp_no), "{:U('read','id='.$vo['id'])}");
+	}
+
+	function save() {
+		window.onbeforeunload = null;
+
+		if(check_form("form_data")){
+			sendForm("form_data", "{:U('save')}");
+		}	
+	}
+
+	function select_confirm() {
+		winopen("{:U('popup/confirm')}", 730, 750);
+	};
+
+	function appoint(){
+		var flow_id = $("#id").val();
+		var deal_userid = $("#deal_userid option:selected").val();
+		var appoint_remark = $("#appoint_remark").val();
+		var data = {
+			'flow_id'	 	: flow_id,
+			'deal_userid' 	: deal_userid,
+			'appoint_remark': appoint_remark
+		}
+		$.post("{:U('appoint')}",data,function (result){
+			if(result){
+				ui_success("指派成功");
+				go_return_url();
+			}else{
+				return false;
+			}
+		},'json');
+	}
+
+	$(document).ready(function(){
+		set_return_url(document.location,1);
+
+		$("#confirm span").on("dblclick", function() {
+			$("#confirm span").last().find("b").remove();
+		});
+		$("#consult span").on("dblclick", function() {
+			$("#consult span").last().find("b").remove();
+		});
+		show_content();		
+	}); 
+</script>

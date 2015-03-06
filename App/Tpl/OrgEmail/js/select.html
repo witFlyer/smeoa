@@ -1,0 +1,179 @@
+<script type="text/javascript">
+function getPostName(value) {
+	var list   = [];
+	var result = '-';
+	
+	<empty name="post_list">
+	<else/>
+		<foreach name="post_list" key="k" item="v">
+		list[{$k}] = "{$v}";
+		</foreach>
+	</empty>
+	
+	if (list.length > 0) {
+		if (list[value] != null) {
+			result = list[value];
+		}
+	}
+	
+	return result;
+}
+
+	function selectAjax(isAuto) {
+		var categoryId_0 = $("select[name='category_id_0']").val();
+		var categoryId_1 = $("select[name='category_id_1']").val();
+		var categoryId_2 = $("select[name='category_id_2']").val();
+		var levelId 	 = $("select[name='level_id']").val();
+		var orgName 	 = $("input[name='org_name']").val();
+		var post 	 	 = $("input[name='post']").val();
+		var type 	 	 = $("select[name='type']").val();
+		var tags		 = [];
+		
+		$("input[name='tags[]']:checked").each(function() {
+			tags.push($(this).val());
+		});
+		tags = tags.join(',');
+		
+		sendAjax2("{:U('selectAjax')}", {
+			'category_id_0': categoryId_0,
+			'category_id_1': categoryId_1,
+			'category_id_2': categoryId_2,
+			'level_id': levelId,
+			'org_name': orgName,
+			'post': post,
+			'type': type,
+			'tags': tags
+		}, function(result) {
+			$("ul#srcOrgList").html('');
+			
+			if (result.data != null) {
+				for (var i = 0; i < result.data.length; i ++) {
+					$("ul#srcOrgList").append('<li email="'+ result.data[i].email +'" '+
+											  '    realname="'+ result.data[i].realname +'" '+
+											  '    orgId="'+ result.data[i].org_id +'" '+
+											  '    contactId="'+ result.data[i].id +'" '+
+											  '    postName="'+ getPostName(result.data[i].post) +'" '+
+											  '    orgName="'+ result.data[i].org_name +'" '+
+											  '    post="'+ result.data[i].post +'" '+
+											  '>'+ result.data[i].realname +' '+ getPostName(result.data[i].post) +'('+ result.data[i].org_name +')</li>');
+				}
+			} else {
+				if (isAuto == 0 || isAuto == null) {
+					alert('未找到符合条件的机构!');
+				}
+			}
+		});
+	}
+	
+	function add() {
+		$("ul#srcOrgList li.selected").each(function() {
+			var This		= $(this);
+			var email		= This.attr("email");
+			var realname	= This.attr("realname");
+			var orgId		= This.attr("orgId");
+			var contactId	= This.attr("contactId");
+			var postName	= This.attr("postName");
+			var orgName		= This.attr("orgName");
+			var post		= This.attr("post");
+			
+			This.removeClass("selected").addClass("right");
+			
+			$("#dstOrg select").append('<option value="'+ email +'" '+
+									   '        realname="'+ realname +'" '+
+									   '        orgId="'+ orgId +'" '+
+									   '        contactId="'+ contactId +'" '+
+									   '        postName="'+ postName +'" '+
+									   '        orgName="'+ orgName +'" '+
+									   '        post="'+ post +'" '+
+									   '>'+ realname +' '+ postName +'('+ orgName +')</option>');
+		});
+	}
+	
+	function save() {
+		var obj = window.parent.document;
+		
+		$("#dstOrg select option").each(function() {
+			var This		= $(this);
+			var email		= This.val();
+			var realname	= This.attr("realname");
+			var orgId		= This.attr("orgId");
+			var contactId	= This.attr("contactId");
+			var postName	= This.attr("postName");
+			var orgName		= This.attr("orgName");
+			var post		= This.attr("post");
+			
+			$("#orgList1", obj).append('<li>'+
+									   '	<input type="hidden" name="realname[]" value="'+ realname +'" />'+
+									   '	<input type="hidden" name="email[]" value="'+ email +'" />'+
+									   '	<input type="hidden" name="orgId[]" value="'+ orgId +'" />'+
+									   '	<input type="hidden" name="contactId[]" value="'+ contactId +'" />'+
+									   '	<span>'+ realname +' '+ postName +'('+ orgName +')</span>'+
+									   '	<a href="javascript:void(0);">移除</a>'+
+									   '</li>');
+		});
+		
+		myclose();
+	}
+	
+	$(document).ready(function() {
+		selectAjax(1);
+		
+		$("ul#srcOrgList").delegate("li", "click", function(){
+			var This = $(this);
+			
+			if (This.hasClass("selected")) {
+				This.removeClass("selected");
+			} else {
+				This.addClass("selected");
+			}
+		});
+		
+		$("#dstOrg select").delegate("option", "dblclick", function() {
+			var This		= $(this);
+			var contactId	= This.attr("contactId");
+			
+			$("#srcOrgList li[contactId='"+ contactId +"']").removeClass("right").addClass("selected");
+			This.remove();
+		});
+		
+		$("select[name='type']").change(function(e) {
+			var val = $(this).val();
+			
+			if (val == 1) {
+				$("#contactTags").hide();
+			} else {
+				$("#contactTags").show();
+			}
+		});
+	});
+</script>
+<script type="text/javascript" src="/Public/js/linkagesel.js"></script>
+<script language="javascript">
+$(document).ready(function(){
+	new LinkageSel({
+		data: {$category_tree},
+		select: ["select[name='category_id_0']", "select[name='category_id_1']", "select[name='category_id_2']"],
+		head: '请选择...',
+		minWidth: 120,
+		maxWidth: 120,
+		fixWidth: 120,
+		loaderImg: '/Public/img/ui-anim_basic_16x16.gif',
+		autoHide: true,
+		level: 3,
+		defVal: [{$category_linkage.defVal}],
+		root: [{$category_linkage.root}]
+	});
+	
+	$("select[name='category_id_0']").change(function(e) {
+		var value = $(this).val();
+		
+		if (value == 69) {
+			$("select[name='level_id']").show();
+		} else {
+			$("select[name='level_id']").hide();
+			$("select[name='level_id']").find("option[value='']").attr("selected", true);
+		}
+	});
+});
+</script>
+

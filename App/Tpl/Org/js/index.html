@@ -1,0 +1,102 @@
+<script>
+	function add() {
+		location.href = "{:U('org/add')}";
+	};
+
+	//导出可选机构信息
+	function exportOrg() {
+		var attr_ids="";
+		$("input[name='org_id[]']:checked").each(function(){
+		attr_ids +=$(this).val()+",";
+		});
+		if(attr_ids.length==0){
+			ui_error("请选择导出机构");
+			return false;
+		}
+		ui_confirm("确定要导出吗?",function(){
+			location.href = "{:U('org/export')}?type=part&ids="+attr_ids;
+		})
+	};
+	// //导出所以符合条件的机构信息
+	function exportOrgAll() {
+		var categoryId_0 = $("select[name='category_id_0']").val();
+		var categoryId_1 = $("select[name='category_id_1']").val();
+		var categoryId_2 = $("select[name='category_id_2']").val();
+		var levelId 	 = $("select[name='level_id']").val();
+		var location_id  = $("select[name='location_id']").val();
+		var status 	 	 = $("select[name='status']").val();
+		var orgName 	 = $("input[name='org_name']").val();
+		var is_policy 	 = $("select[name='is_policy']").val();
+		var establish_date1 	 = $("input[name='establish_date1']").val();
+		var establish_date2 	 = $("input[name='establish_date2']").val();
+		var street 	 	 = $("input[name='street']").val();
+		var is_member 	 = $("input[name='is_member']").val();
+
+		var ids='';
+		ids += categoryId_0+",";
+		ids += categoryId_1+",";
+		ids += categoryId_2+",";
+		ids += levelId+",";
+		ids += location_id+",";
+		ids += status+",";
+		ids += orgName+",";
+		ids += is_policy+",";
+		ids += establish_date1+",";
+		ids += establish_date2+",";
+		ids += street+",";
+		ids += is_member;
+
+		ui_confirm("确定要导出全部吗?",function(){
+			location.href = "{:U('org/export')}?type=all&ids="+ids;
+		})
+	};
+
+	function del() {
+		var vars = $("#form_data").serialize();
+		ui_confirm('确定要删除吗?',function(){
+			sendAjax("{:U('del')}", vars, function(data) {
+				if (data.status) {
+					ui_alert(data.info,function(){
+						location.reload();
+					});									
+				}
+			});
+		});
+	}
+	
+	$(document).ready(function() {
+		set_return_url();
+	}); 
+</script>
+<script type="text/javascript" src="/Public/js/linkagesel.js"></script>
+<script language="javascript">
+$(document).ready(function(){
+	if($('#search_key').val()==1){
+		$("#adv_search").removeClass("display-none");
+	}
+	new LinkageSel({
+		data: {$category_tree},
+		select: ["select[name='category_id_0']", "select[name='category_id_1']", "select[name='category_id_2']"],
+		head: '请选择...',
+		minWidth: 100,
+		maxWidth: 100,
+		fixWidth: 100,
+		loaderImg: '/Public/img/ui-anim_basic_16x16.gif',
+		autoHide: true,
+		level: 3,
+		defVal: [{$category_linkage.defVal}],
+		root: [{$category_linkage.root}]
+	});
+	
+	$("select[name='category_id_0']").change(function(e) {
+		var value = $(this).val();
+		
+		if (value == 69) {
+			$("select[name='level_id']").parent().parent().show();
+		} else {
+			$("select[name='level_id']").parent().parent().hide();
+			$("select[name='level_id']").find("option[value='']").attr("selected", true);
+		}
+	});
+});
+</script>

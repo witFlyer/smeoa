@@ -1,0 +1,106 @@
+<layout name='Layout/ace_layout' />
+{:W('PageHeader',array('name'=>'短信群发','search'=>'N'))}
+<div class="operate panel panel-default">
+	<div class="panel-body">
+		<div class="pull-left">
+			<a onclick="go_return_url();" class="btn btn-sm btn-primary">返回</a>
+		</div>
+		<div class="pull-right">
+			<a onclick="save();"  class="btn btn-sm btn-primary">提交</a>
+		</div>
+	</div>
+</div>
+<form method='post' id="form_data" name="form_data" enctype="multipart/form-data" class="well form-horizontal">
+	<input type="hidden" id="ajax" name="ajax" value="0">
+	<input type="hidden" id="opmode" name="opmode" value="add">
+	<input type="hidden" id="add_file" name="add_file">
+	
+	<div class="form-group">
+		<label class="col-sm-2 control-label" for="content">内容 <font color="red">*</font>：</label>
+		<div class="col-sm-8">
+			<textarea class="form-control" id="content" name="content" cols="5" style="height: 100px;" check="require" msg="请输入内容"></textarea>
+		</div>
+	</div>
+	<style type="text/css">
+	ul.orgList {
+		height: 200px;
+		overflow-y: scroll;
+		margin: 0;
+		padding: 5px;
+		border: 1px solid #D5D5D5;
+	}
+	ul#orgList2 {
+		height: 120px;
+	}
+	ul.orgList li {
+		list-style-position: inside;
+		list-style-type: decimal;
+		clear: both;
+		height: 24px;
+		line-height: 24px;
+		border-bottom: 1px dashed #D5D5D5;
+	}
+	ul.orgList li:hover {
+		border-bottom-color: red;
+	}
+	ul.orgList li span {
+	}
+	ul.orgList li a {
+		float: right;
+		padding-right: 10px;
+		color: #F30;
+	}
+	</style>
+	<div class="form-group">
+		<label class="col-sm-2 control-label">
+			<a onclick="select();"  class="btn btn-sm btn-primary" style="float: right;">选择机构联系人</a>
+		</label>
+		<div class="col-sm-8">
+			<ul class="orgList" id="orgList1" class="form-control">
+			</ul>
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-sm-2 control-label" for="addRealname">姓名：</label>
+		<div class="col-sm-8">
+			<input class="col-20" type="text" id="addRealname" name="addRealname" />
+			<label for="addMobile" style="margin-left: 20px;">手机：</label>
+			<input class="col-20" type="text" id="addMobile" name="addMobile" />
+			
+			<a onclick="add();"  class="btn btn-sm btn-primary" style="float: right;">添加</a>
+			<style type="text/css">
+			#uploader #file_list {
+				position: absolute;
+				width: 500px;
+				margin-left: -422px;
+			}
+			</style>
+			<div class="pull-right" style="margin-right: 10px;">
+				{:W('File',array('add_file'=> '', 'mode' => 'import'))}
+			</div>
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-sm-2 control-label"></label>
+		<div class="col-sm-8">
+			<ul class="orgList" id="orgList2" class="form-control">
+			</ul>
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-sm-2 control-label"></label>
+		<div class="col-sm-8">
+			<input type="radio" name="sendType" id="sendType_0" value="0" checked />
+			<label for="sendType_0">立即发送</label>
+			<input type="radio" name="sendType" id="sendType_1" value="1" />
+			<label for="sendType_1">定时发送</label>
+		</div>
+	</div>
+	<div class="form-group" id="sendTimerDiv" style="display: none;">
+		<label class="col-sm-2 control-label">定时发送时间：</label>
+		<div class="col-sm-8">
+			<input type="text" name="sendTimer" readonly="readonly" value="" class="col-20 input-dateEmail">
+		</div>
+	</div>
+	
+</form>

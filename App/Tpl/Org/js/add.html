@@ -1,0 +1,54 @@
+<script type="text/javascript" src="/Public/js/linkagesel.js"></script>
+<script type="text/javascript">
+	function save() {
+		window.onbeforeunload=null;
+		var org_no = $("#org_no").val();
+		var org_name = $("#org_name").val();
+
+		var data = {
+			'org_no' : org_no,
+			'org_name' : org_name
+		}
+		if (check_form("form_data")) {
+			$.post("{:U('org/same_org')}",data,function(result){
+				if(result==1){
+					ui_error("机构编号已存在");
+					return false;
+				}else if(result==2){
+					ui_error("机构名称已存在");
+					return false;
+				}else{
+					sendForm("form_data", "{:U('save')}");
+				}
+			},'json')
+		}
+	}
+</script>
+<script language="javascript">
+$(document).ready(function(){
+	new LinkageSel({
+		data: {$category_tree},
+		select: ["select[name='category_id_0']", "select[name='category_id_1']", "select[name='category_id_2']"],
+		head: '请选择...',
+		minWidth: 100,
+		maxWidth: 100,
+		fixWidth: 100,
+		loaderImg: '/Public/img/ui-anim_basic_16x16.gif',
+		autoHide: true,
+		level: 3,
+		defVal: [{$category_linkage.defVal}],
+		root: [{$category_linkage.root}]
+	});
+	
+	$("select[name='category_id_0']").change(function(e) {
+		var value = $(this).val();
+		
+		if (value == 69) {
+			$("select[name='level_id']").show();
+		} else {
+			$("select[name='level_id']").hide();
+			$("select[name='level_id']").find("option[value='']").attr("selected", true);
+		}
+	});
+});
+</script>

@@ -1,0 +1,587 @@
+<layout name='Layout/ace_layout' />
+<div class="page-header clearfix">
+	<h1 class="col-sm-8">编辑机构—{$vo.org_name}</h1>
+</div>
+<if condition="$is_special">
+<style type="text/css">
+	.sorry{
+		opacity: 0.8;
+		color:#888;
+		position:absolute;
+		width:610px;
+		height:50px;
+		line-height:50px;
+	}
+</style>
+<h2 class="sorry" id="sorry">
+对不起，您没有编辑、查看此机构相关信息的权限!
+</h2>
+<else />
+<div class="widget-box">
+	<style type="text/css">
+	.widget-toolbar > .nav-tabs > li:not(.active) > a.offbeat {
+		color: #F90;
+	}
+	.widget-toolbar > .nav-tabs > li:not(.active) > a.offbeat:hover {
+		color: #F60;
+	}
+	.widget-toolbar > .nav-tabs > li.active > a.offbeat {
+		color: #F90;
+	}
+	.widget-toolbar > .nav-tabs > li.active > a.offbeat:hover {
+		color: #F60;
+	}
+	.ul_table ul li.tbody {
+		line-height: 34px;
+	}
+	span{
+		word-wrap : break-word;
+		padding-right: 6px;
+	}
+	</style>
+	<div class="widget-header" style="background: none;">
+		<div class="widget-toolbar no-border">
+			<ul class="nav nav-tabs">
+				<li class="active">
+					<a data-toggle="tab" href="#flow-base">基本信息</a>
+				</li>
+				<li>
+					<a data-toggle="tab" href="#flow-shareholder">股东情况</a>
+				</li>
+				<li>
+					<a data-toggle="tab" href="#flow-contact">联系人</a>
+				</li>
+				<li>
+					<a data-toggle="tab" href="#flow-executive">高管信息</a>
+				</li>
+				<li>
+					<a data-toggle="tab" href="#flow-schedules">工作动态</a>
+				</li>
+				<if condition="$is_org">
+				<li>
+					<a data-toggle="tab" href="#flow-tax">纳税和人员情况</a>
+				</li>
+				<li>
+					<a class="offbeat" data-toggle="tab" href="#flow-subsidie">各类补贴</a>
+				</li>
+				</if>
+				<li>
+					<a class="offbeat" data-toggle="tab" href="#flow-comprehensive">综合服务</a>
+				</li>
+				<li>
+					<a class="offbeat" data-toggle="tab" href="#flow-payfee">金融促进会缴费情况</a>
+				</li>
+			</ul>
+		</div>
+	</div>
+	<div class="widget-body">
+		<div class="widget-main" style="padding: 0;">
+			<div class="tab-content" style="padding-bottom: 0;">
+				<div id="flow-base" class="tab-pane in active ul_table">
+
+					<form id="form_data" name="form_data" method="post" class="form-horizontal">
+						<input type="hidden" id="ajax" name="ajax" value="0">
+						<input type="hidden" id="org_id" name="org_id" value="{$vo.org_id}">
+						<input type="hidden" id="opmode" name="opmode" value="edit">
+						<input type="hidden" id="modify_id" name="modify_id" value="{:get_user_id()}">
+						<table class="table table-bordered">
+							<tr>
+								<th colspan="4" style="text-align: center; background: #E6E6E6;">机构名称</th>
+							</tr>
+							<tr>
+								<th style="line-height: 30px;">机构编码 <font color="red">*</font></th>
+								<td colspan="3"><input class="form-control" type="text" id="org_no" name="org_no" value="{$vo.org_no}"  check="require" msg="请输入机构编码" /></td>
+							</tr>
+							<tr>
+								<th style="line-height: 30px;">机构名称 <font color="red">*</font></th>
+								<td colspan="3"><input class="form-control input-sm" type="text" id="org_name" name="org_name" value="{$vo.org_name}" check="require" msg="请输入机构名称" /></td>
+							</tr>
+							<tr>
+								<th style="line-height: 30px;">机构类别</th>
+								<td colspan="3">
+									<select name="category_id_0" id="category_id_0" class="col-15"></select>
+									<select name="category_id_1" id="category_id_1" class="col-15"></select>
+									<select name="category_id_2" id="category_id_2" class="col-15"></select>
+									<select name="level_id" id="level_id" class="col-15" style="display: none;">
+										<option value="">请选择机构能级</option>
+										{:fill_option($level_list, $vo.level_id)}
+									</select>
+								</td>
+							</tr>
+							<tr>
+								<th colspan="4" style="text-align: center; background: #E6E6E6;">基本信息</th>
+							</tr>
+							<tr>
+								<th style="line-height: 30px;">成立日期</th>
+								<td>
+								<if condition="($vo.establish_date eq 0000-00-00)">
+									<input data-date-format="yyyy-mm-dd" type="text" id="establish_date" name="establish_date"  value="" readonly="readonly" class="input-date form-control"/>
+								<else/>
+									<input data-date-format="yyyy-mm-dd" type="text" id="establish_date" name="establish_date"  value="{$vo.establish_date}" readonly="readonly" class="input-date form-control"/>
+								</if>
+								</td>
+								<th style="line-height: 30px;">享受政策</th>
+								<td>
+									<select name="is_policy" id="is_policy" class="col-10">
+										<option value="0"<if condition="($vo.is_policy eq '0')"> selected</if>>否</option>
+										<option value="1"<if condition="($vo.is_policy eq '1')"> selected</if>>是</option>
+									</select>
+								</td>
+							</tr>
+							<tr>
+								<th style="line-height: 30px;">工商注册号</th>
+								<td>
+									<input type="text" id="business_reg_no" name="business_reg_no" value="{$vo.business_reg_no}" class="form-control" />
+								</td>
+								<th style="line-height: 30px;">税务登记号</th>
+								<td>
+									<input type="text" id="tax_reg_no" name="tax_reg_no" value="{$vo.tax_reg_no}" class="form-control" />
+								</td>
+							</tr>
+							<tr>
+								<th style="line-height: 30px;">注册资金</th>
+								<td>
+									<select name="reg_capital_unit" id="reg_capital_unit" class="col-10">
+										<option value="">请选择注册资金</option>
+										{:fill_option(C('ORG_REG_CAPITAL_UNIT'), $vo.reg_capital_unit)}
+									</select>
+									<input type="text" id="reg_capital_value" name="reg_capital_value" value="{$vo.reg_capital_value}" class="col-10" />
+								</td>
+								<th style="line-height: 30px;">法定代表人</th>
+								<td>
+									<input type="text" id="legal_person" name="legal_person" value="{$vo.legal_person}" class="form-control" />
+								</td>
+							</tr>
+							<tr>
+								<th style="line-height: 30px;">企业所在地</th>
+								<td colspan="3">
+									<select name="location_id" id="location_id" class="col-15">
+										<option value="">请选择企业所在地</option>
+										{:fill_option($location_list,$vo['location_id'])}
+									</select>
+								</td>
+							</tr>
+							<tr>
+								<th style="line-height: 30px;">注册地址</th>
+								<td colspan="3">
+									<input type="text" id="reg_address" name="reg_address" value="{$vo.reg_address}" class="form-control" />
+								</td>
+							</tr>
+							<tr>
+								<th style="line-height: 30px;">办公地址</th>
+								<td colspan="3">
+									<input type="text" id="office_address" name="office_address" value="{$vo.office_address}" class="form-control" />
+								</td>
+							</tr>
+							<tr>
+								<th style="line-height: 30px;">邮政编码</th>
+								<td>
+									<input type="text" id="postcode" name="postcode" value="{$vo.postcode}" class="form-control" />
+								</td>
+								<th style="line-height: 30px;">所属街道镇园区</th>
+								<td>
+									<input type="text" id="street" name="street" value="{$vo.street}" class="form-control" />
+								</td>
+							</tr>
+							<tr>
+								<th style="line-height: 30px;">税管地</th>
+								<td>
+									<input type="text" id="tax_tube_land" name="tax_tube_land" value="{$vo.tax_tube_land}" class="form-control" />
+								</td>
+								<th style="line-height: 30px;">税管所</th>
+								<td>
+									<input type="text" id="tax_tube_station" name="tax_tube_station" value="{$vo.tax_tube_station}" class="form-control" />
+								</td>
+							</tr>
+							<tr>
+								<th style="line-height: 30px;">公司电话</th>
+								<td>
+									<input type="text" id="office_tel" name="office_tel" value="{$vo.office_tel}" class="form-control" />
+								</td>
+								<th style="line-height: 30px;">传真</th>
+								<td>
+									<input type="text" id="office_fax" name="office_fax" value="{$vo.office_fax}" class="form-control" />
+								</td>
+							</tr>
+							<tr>
+								<th style="line-height: 60px;">公司简介</th>
+								<td colspan="3">
+									<textarea name="company_intro" id="company_intro" value="{$vo.company_intro}" class="form-control" style="resize: none;">{$vo.company_intro}</textarea>
+								</td>
+							</tr>
+							<tr>
+								<th style="line-height: 30px;">状态</th>
+								<td colspan="3">
+									<input type="radio" value="0" id="status_0" name="status"<if condition="($vo.status eq '0')"> checked</if> /> 确立
+									<input type="radio" value="1" id="status_1" name="status"<if condition="($vo.status eq '1')"> checked</if> /> 迁移
+									<input type="radio" value="2" id="status_2" name="status"<if condition="($vo.status eq '2')"> checked</if> /> 注销
+								</td>
+							</tr>
+							<tr>
+								<th colspan="4" style="text-align: center; background: #E6E6E6;">金融促进会</th>
+							</tr>
+							<tr>
+								<th style="line-height: 30px;">是否会员</th>
+								<td>
+									<input type="radio" value="0" id="is_member_0" name="is_member"<if condition="($vo.is_member eq '0')"> checked</if> /> 否
+									<input type="radio" value="1" id="is_member_1" name="is_member"<if condition="($vo.is_member eq '1')"> checked</if> /> 是
+								</td>
+								<th style="line-height: 30px;">入会日期</th>
+								<td>
+								<if condition="($vo.membership_date eq 0000-00-00)">
+									<input data-date-format="yyyy-mm-dd" type="text" id="membership_date" name="membership_date"  value="" readonly="readonly" class="input-date form-control"/>
+								<else/>
+									<input data-date-format="yyyy-mm-dd" type="text" id="membership_date" name="membership_date"  value="{$vo.membership_date}" readonly="readonly" class="input-date form-control"/>
+								</if>
+								</td>
+							</tr>
+						</table>
+
+						<div class="action" style="margin-top: 10px;">
+							<input class="btn btn-sm btn-primary" type="button" value="保存" onclick="save();" />
+							<!-- <input  class="btn btn-sm btn-primary" type="button" value="取消" onclick="go_return_url();" /> -->
+						</div>
+						
+					</form>
+				</div>
+				<div id="flow-shareholder" class="tab-pane in ul_table">
+					<div style="margin-bottom: 10px; text-align: right;">
+						<a class="btn btn-sm btn-primary btn-add" href="javascript:void(0);">添加</a>
+					</div>	
+					<ul style="border-bottom: 1px solid #eaedf1;">
+						<li class="thead">
+							<div class="pull-left">
+								<span>股东名称</span>
+							</div>
+							<div class="pull-right">
+								<span class="col-20">出资额（万元）</span>
+								<span class="col-20">股权比例（%）</span>
+								<span class="col-8">操作</span>
+							</div>
+						</li>
+						<empty name="shareholder_list">
+							<li class="no-data">
+								没找到数据
+							</li>
+						<else/>
+							<foreach name="shareholder_list" item="v">
+								<li class="tbody">
+									<div rowId="{$v.id}">
+										<div class="pull-left">
+											<span><a href="javascript:shareholderEdit('{$v.id}')">{$v.name}</a></span>
+										</div>
+										<div class="pull-right">
+											<span class="col-20"><empty name="v.contribution">-<else />{$v.contribution}</empty></span>
+											<span class="col-20"><empty name="v.proportion">-<else />{$v.proportion}</empty></span>
+											<span class="col-8"><a class="btn btn-sm btn-danger btn-delete" href="javascript:void(0);">删除</a></span>
+										</div>
+									</div>
+								</li>
+							</foreach>
+						</empty>
+					</ul>
+								
+				</div>
+				<div id="flow-contact" class="tab-pane in ul_table">
+					<div style="margin-bottom: 10px; text-align: right;">
+						<a class="btn btn-sm btn-primary btn-add" href="javascript:void(0);">添加</a>
+					</div>
+					<ul style="border-bottom: 1px solid #eaedf1;">
+						<li class="thead">
+							<div class="pull-left">
+								<span>姓名</span>
+							</div>
+							<div class="pull-right">
+								<span class="col-15">职务</span>
+								<span class="col-15">固定电话</span>
+								<span class="col-15">移动电话</span>
+								<span class="col-25">电子邮箱</span>
+								<span class="col-8">操作</span>
+							</div>
+						</li>
+						<empty name="contact_list">
+							<li class="no-data">
+								没找到数据
+							</li>
+						<else/>
+							<foreach name="contact_list" item="v">
+								<li class="tbody">
+									<div rowId="{$v.id}">
+										<div class="pull-left">
+											<span><a href="javascript:contactEdit('{$v.id}')">{$v.realname}</a></span>
+										</div>
+										<div class="pull-right">
+											<span class="col-15 "><empty name="v.post">-<else />{$v.post}</empty></span>
+											<span class="col-15 "><empty name="v.tel">-<else />{$v.tel}</empty></span>
+											<span class="col-15 "><empty name="v.mobile">-<else />{$v.mobile}</empty></span>
+											<span class="col-25 "><empty name="v.email">-<else />{$v.email}</empty></span>
+											<span class="col-8"><a class="btn btn-sm btn-danger btn-delete" href="javascript:void(0);">删除</a></span>
+										</div>
+									</div>
+								</li>
+							</foreach>
+						</empty>
+					</ul>
+					
+				</div>
+				<div id="flow-executive" class="tab-pane in ul_table">
+					<div style="margin-bottom: 10px; text-align: right;">
+						<a class="btn btn-sm btn-primary btn-add" href="javascript:void(0);">添加</a>
+					</div>
+					<ul style="border-bottom: 1px solid #eaedf1;">
+						<li class="thead">
+							<div class="pull-left">
+								<span>姓名</span>
+							</div>
+							<div class="pull-right">
+								<span class="col-10">职务</span>
+								<span class="col-20">身份证</span>
+								<span class="col-10">固定电话</span>
+								<span class="col-10">移动电话</span>
+								<span class="col-25">电子邮箱</span>
+								<span class="col-8">操作</span>
+							</div>
+						</li>
+						<empty name="executive_list">
+							<li class="no-data">
+								没找到数据
+							</li>
+						<else/>
+							<foreach name="executive_list" item="v">
+								<li class="tbody">
+									<div rowId="{$v.id}">
+										<div class="pull-left">
+											<span><a href="javascript:executiveEdit('{$v.id}')">{$v.realname}</a></span>
+										</div>
+										<div class="pull-right">
+											<span class="col-10 " style="padding-right:8px;"><empty name="v.post">-<else />{$v.post}</empty></span>
+											<span class="col-20 "><empty name="v.idcard">-<else />{$v.idcard}</empty></span>
+											<span class="col-10 "><empty name="v.tel">-<else />{$v.tel}</empty></span>
+											<span class="col-10 "><empty name="v.mobile">-<else />{$v.mobile}</empty></span>
+											<span class="col-25 "><empty name="v.email">-<else />{$v.email}</empty></span>
+											<span class="col-8"><a class="btn btn-sm btn-danger btn-delete" href="javascript:void(0);">删除</a></span>
+										</div>
+									</div>
+								</li>
+							</foreach>
+						</empty>
+					</ul>
+									
+				</div>	
+				<div id="flow-schedules" class="tab-pane in ul_table">
+					<ul style="border-bottom: 1px solid #eaedf1;">
+						<li class="thead">
+							<div class="pull-left">
+								<span>标题</span>
+							</div>
+							<div class="pull-right">
+								<span class="col-10">类别</span>
+								<span class="col-25">地点</span>
+								<span class="col-15">参与人员</span>
+								<span class="col-15">开始时间</span>
+								<span class="col-15">结束时间</span>
+								<!-- <span class="col-10">内容</span> -->
+							</div>
+						</li>
+						<empty name="schedules_list">
+							<li class="no-data">
+								没找到数据
+							</li>
+						<else/>
+							<foreach name="schedules_list" item="v">
+								<li class="tbody">
+									<div rowId="{$v.id}">
+										<div class="pull-left">
+											<span class="col-15"><a href="{:U('schedules/read2','id='.$v['id'])}">{$v.name}</a></span>
+										</div>
+										<div class="pull-right">
+											<span class="col-10 "><empty name="v.type">-<else />{$v.type|get_schedule_type}</empty></span>
+											<span class="col-25 "><empty name="v.location">-<else />{$v.location}</empty></span>
+											<span class="col-15 "><empty name="v.actor">-<else />{$v.actor}</empty></span>
+											<span class="col-15 "><empty name="v.start_date">-<else />{$v.start_date}</empty></span>
+											<span class="col-15 "><empty name="v.end_date">-<else />{$v.end_date}</empty></span>
+										<!-- 	<span class="col-10 "><empty name="v.content">-<else />{$v.content}</empty></span> -->
+										</div>
+									</div>
+								</li>
+							</foreach>
+						</empty>
+					</ul>
+									
+				</div>
+				<div id="flow-tax" class="tab-pane in ul_table">
+					<div style="margin-bottom: 10px; text-align: right;">
+						<a class="btn btn-sm btn-primary btn-add" href="javascript:void(0);">添加</a>
+					</div>
+					<ul style="border-bottom: 1px solid #eaedf1;">
+						<li class="thead">
+							<div class="pull-left">
+								<span>年度</span>
+							</div>
+							<div class="pull-right">
+								<span class="col-12">营业税（万元）</span>
+								<span class="col-12">增值税（万元）</span>
+								<span class="col-12">所得税（万元）</span>
+								<span class="col-12">个人所得税（万元）</span>
+								<span class="col-10">合计（万元）</span>
+								<span class="col-10">新区留存</span>
+								<span class="col-10">人数</span>
+								<span class="col-8">操作</span>
+							</div>
+						</li>
+						<empty name="tax_list">
+							<li class="no-data">
+								没找到数据
+							</li>
+						<else/>
+							<foreach name="tax_list" item="v">
+								<li class="tbody">
+									<div rowId="{$v.id}">
+										<div class="pull-left">
+											<span><a href="javascript:taxEdit('{$v.id}')">{$v.year}</a></span>
+										</div>
+										<div class="pull-right">
+											<span class="col-12 "><empty name="v.sales">-<else />{$v.sales}</empty></span>
+											<span class="col-12 "><empty name="v.value_added">-<else />{$v.value_added}</empty></span>
+											<span class="col-12 "><empty name="v.income">-<else />{$v.income}</empty></span>
+											<span class="col-12 "><empty name="v.individual_income">-<else />{$v.individual_income}</empty></span>
+											<span class="col-10 "><empty name="v.total">-<else />{$v.total}</empty></span>
+											<span class="col-10 "><empty name="v.retained">-<else />{$v.retained}</empty></span>
+											<span class="col-10 "><empty name="v.num">-<else />{$v.num}</empty></span>
+											<span class="col-8"><a class="btn btn-sm btn-danger btn-delete" href="javascript:void(0);">删除</a></span>
+										</div>
+									</div>
+								</li>
+							</foreach>
+						</empty>
+					</ul>
+									
+				</div>
+				<div id="flow-subsidie" class="tab-pane in ul_table">
+					<div style="margin-bottom: 10px; text-align: right;">
+						<a class="btn btn-sm btn-primary btn-add" href="javascript:void(0);">添加</a>
+					</div>
+					<ul style="border-bottom: 1px solid #eaedf1;">
+						<li class="thead">
+							<div class="pull-left">
+								<span>补贴类型</span>
+							</div>
+							<div class="pull-right">
+								<span class="col-10">所属年度</span>
+								<span class="col-10">人次</span>
+								<span class="col-10">姓名</span>
+								<span class="col-15">金额（万元）</span>
+								<span class="col-20">落实时间</span>
+								<span class="col-8">操作</span>
+							</div>
+						</li>
+						<empty name="subsidie_list">
+							<li class="no-data">
+								没找到数据
+							</li>
+						<else/>
+							<foreach name="subsidie_list" item="v">
+								<li class="tbody">
+									<div rowId="{$v.id}">
+										<div class="pull-left">
+											<span><a href="javascript:subsidieEdit('{$v.id}')">{$v.typeName}</a></span>
+										</div>
+										<div class="pull-right">
+											<span class="col-10 "><empty name="v.year">-<else />{$v.year}</empty></span>
+											<span class="col-10 "><empty name="v.num">-<else />{$v.num}</empty></span>
+											<span class="col-10 "><empty name="v.realname">-<else />{$v.realname}</empty></span>
+											<span class="col-15 "><empty name="v.amount">-<else />{$v.amount}</empty></span>
+											<span class="col-20 "><empty name="v.implement">-<else />{$v.implement}</empty></span>
+											<span class="col-8"><a class="btn btn-sm btn-danger btn-delete" href="javascript:void(0);">删除</a></span>
+										</div>
+									</div>
+								</li>
+							</foreach>
+						</empty>
+					</ul>
+									
+				</div>
+				<div id="flow-comprehensive" class="tab-pane in ul_table">
+					<div style="margin-bottom: 10px; text-align: right;">
+						<a class="btn btn-sm btn-primary btn-add" href="javascript:void(0);">添加</a>
+					</div>
+					<ul style="border-bottom: 1px solid #eaedf1;">
+						<li class="thead">
+							<div class="pull-left">
+								<span>姓名</span>
+							</div>
+							<div class="pull-right">
+								<span class="col-10">服务类型</span>
+								<span class="col-10">职务</span>
+								<span class="col-20">办理时间</span>
+								<span class="col-35">事项</span>
+								<span class="col-8">操作</span>
+							</div>
+						</li>
+						<empty name="comprehensive_list">
+							<li class="no-data">
+								没找到数据
+							</li>
+						<else/>
+							<foreach name="comprehensive_list" item="v">
+								<li class="tbody">
+									<div rowId="{$v.id}">
+										<div class="pull-left">
+											<span><a href="javascript:comprehensiveEdit('{$v.id}')">{$v.realname}</a></span>
+										</div>
+										<div class="pull-right">
+											<span class="col-10 "><empty name="v.typeName">-<else />{$v.typeName}</empty></span>
+											<span class="col-10 "><empty name="v.post">-<else />{$v.post}</empty></span>
+											<span class="col-20 "><empty name="v.implement">-<else />{$v.implement}</empty></span>
+											<span class="col-35 "><empty name="v.item">-<else />{$v.item}</empty></span>
+											<span class="col-8"><a class="btn btn-sm btn-danger btn-delete" href="javascript:void(0);">删除</a></span>
+										</div>
+									</div>
+								</li>
+							</foreach>
+						</empty>
+					</ul>
+									
+				</div>
+				<div id="flow-payfee" class="tab-pane in ul_table">
+					<div style="margin-bottom: 10px; text-align: right;">
+						<a class="btn btn-sm btn-primary btn-add" href="javascript:void(0);">添加</a>
+					</div>
+					<ul style="border-bottom: 1px solid #eaedf1;">
+						<li class="thead">
+							<div class="pull-left">
+								<span>所属年度</span>
+							</div>
+							<div class="pull-right">
+								<span class="col-40">缴纳金额（万元）</span>
+								<span class="col-8">操作</span>
+							</div>
+						</li>
+						<empty name="payfee_list">
+							<li class="no-data">
+								没找到数据
+							</li>
+						<else/>
+							<foreach name="payfee_list" item="v">
+								<li class="tbody">
+									<div rowId="{$v.id}">
+										<div class="pull-left">
+											<span><a href="javascript:payfeeEdit('{$v.id}')">{$v.year}</a></span>
+										</div>
+										<div class="pull-right">
+											<span class="col-40"><empty name="v.amount">-<else />{$v.amount}</empty></span>
+											<span class="col-8"><a class="btn btn-sm btn-danger btn-delete" href="javascript:void(0);">删除</a></span>
+										</div>
+									</div>
+								</li>
+							</foreach>
+						</empty>
+					</ul>
+					
+				</div>
+				
+			</div>
+		</div>
+	</div>
+</div>
+</if>
